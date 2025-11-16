@@ -8,27 +8,27 @@ public class Internship {
     private String internshipTitle;
     private String description;
     private String level;
-    private String prefMajor;
+    private String preferredMajor;
     private Date appOpenDate;
     private Date appCloseDate; 
     private String companyName;
     private String compRepIC;
     private String internshipStatus; 
 
-    private List<InternshipApplication> applications; // all apps rather than just accepted ones
+    private List<InternshipApplication> internshipApplications; // all apps rather than just accepted ones
 
-    public Internship(String internshipTitle, String description, String level, String prefMajor, Date appOpenDate, Date appCloseDate, String internshipStatus, String companyName, String compRepIC, int numOfSlots, boolean isVisible) {
+    public Internship(String internshipTitle, String description, String level, String preferredMajor, Date appOpenDate, Date appCloseDate, String internshipStatus, String companyName, String compRepIC, int numOfSlots) {
         this.internshipTitle = internshipTitle;
         this.description = description;
         this.level = level;
-        this.prefMajor = prefMajor;
+        this.preferredMajor = preferredMajor;
         this.appOpenDate = appOpenDate;
         this.appCloseDate = appCloseDate;
         this.internshipStatus = internshipStatus;
         this.companyName = companyName;
         this.compRepIC = compRepIC;
         this.numOfSlots = numOfSlots;
-        this.applications = new ArrayList<>();
+        this.internshipApplications = new ArrayList<>();
     }
 
     public String getInternshipTitle() {return internshipTitle;}
@@ -37,8 +37,8 @@ public class Internship {
     public void setDescription(String description) {this.description = description;}
     public String getLevel() {return level;}
     public void setLevel(String level) {this.level = level;}
-    public String getPrefMajor() {return prefMajor;}
-    public void setPrefMajor(String prefMajor) {this.prefMajor = prefMajor;}
+    public String getPrefMajor() {return preferredMajor;}
+    public void setPrefMajor(String preferredMajor) {this.preferredMajor = preferredMajor;}
     public Date getAppOpenDate() {return appOpenDate;}
     public void setAppOpenDate(Date appOpenDate) {this.appOpenDate = appOpenDate;}
     public Date getAppCloseDate() {return appCloseDate;}
@@ -52,10 +52,14 @@ public class Internship {
     public int getNumOfSlots() {return numOfSlots;}
     public void setNumOfSlots(int numOfSlots) {this.numOfSlots = numOfSlots;}
 
-    public List<InternshipApplication> getAcceptedApps() {
+    public List<InternshipApplication> getInternshipApplications() {
+        return internshipApplications;
+    }
+
+    public List<InternshipApplication> getAcceptedApps() { //check if need this
         List<InternshipApplication> acceptedApps = new ArrayList<>();
-        for (InternshipApplication app: applications) {
-            if ("successful".equalsIgnoreCase(app.getAppStatus())) {
+        for (InternshipApplication app: internshipApplications) {
+            if (app.getApplicationStatus() == ApplicationStatus.SUCCESSFUL) {
                 acceptedApps.add(app);
             }
         }

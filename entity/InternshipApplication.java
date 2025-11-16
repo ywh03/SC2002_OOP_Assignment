@@ -2,19 +2,23 @@ package entity;
 
 public class InternshipApplication {
     private Internship internship;
-    private String appStatus; // successful, pending, rejected
-    private boolean acceptedStatus; //i dont rly rmb what this was lols kiv
+    private ApplicationStatus applicationStatus; // successful, pending, rejected
+    private boolean offerAccepted; 
+    private Student student;
 
-    public InternshipApplication(Internship internship, String appStatus, boolean acceptedStatus) {
+    public InternshipApplication(Internship internship, Student student) {
         this.internship = internship;
-        this.appStatus = appStatus;
-        this.acceptedStatus = acceptedStatus;
+        this.student = student;
+        this.applicationStatus = ApplicationStatus.PENDING; //default is set to pending
+        this.offerAccepted = false; // default is false first
     }
 
     public Internship getInternship() {return internship;}
     public void setInternship(Internship internship) {this.internship = internship;}
-    public String getAppStatus() {return appStatus;}
-    public void setAppStatus(String appStatus) {this.appStatus = appStatus;}
-    public boolean isAcceptedStatus() {return acceptedStatus;}
-    public void setAcceptedStatus(boolean acceptedStatus) {this.acceptedStatus = acceptedStatus;}
+    public ApplicationStatus getApplicationStatus() {return applicationStatus;}
+    public void setApplicationStatus(ApplicationStatus applicationStatus) {this.applicationStatus = applicationStatus;}
+    public boolean getOfferAccepted() {return offerAccepted;}
+    public void setOfferAccepted(boolean offerAccepted) {this.offerAccepted = offerAccepted;}
+    public Student getStudent() {return student;}
+    public void setStudent(Student student) {this.student = student;}
 }
