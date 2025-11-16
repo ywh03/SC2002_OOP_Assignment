@@ -10,12 +10,12 @@ public class UserRepository extends Repository<User> {
 
     @Override
     protected String getId(User user) {
-        return user.getUserId();
+        return user.getUserID();
     }
 
     public User findById(String id) {
         return entities.stream()
-                .filter(user -> user.getUserId().equals(id))
+                .filter(user -> user.getUserID().equals(id))
                 .findFirst()
                 .orElse(null);
     }

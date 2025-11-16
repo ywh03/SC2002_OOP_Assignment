@@ -1,6 +1,8 @@
 package entity;
 
-public class InternshipApplication {
+import java.io.Serializable;
+
+public class InternshipApplication implements Serializable {
     private Internship internship;
     private ApplicationStatus applicationStatus; // successful, pending, rejected
     private boolean offerAccepted; 

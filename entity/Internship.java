@@ -1,9 +1,10 @@
 package entity;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Internship {
+public class Internship implements Serializable {
     private int numOfSlots;
     private String internshipTitle;
     private String description;
