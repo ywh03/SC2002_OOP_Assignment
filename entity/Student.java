@@ -1,5 +1,38 @@
 package entity;
 
-public class Student extends User {
+import java.util.ArrayList;
 
+public class Student extends User{
+    private int yearOfStudy;
+    private String major;
+    private ArrayList<InternshipApplication> appliedInternships = new ArrayList<>();
+
+    // constructor
+    public Student(String userId, String fullName, String password, int yearOfStudy, String major){
+        super(userId, fullName, password);
+        this.userId = userId;
+        this.yearOfStudy = yearOfStudy;
+        this.major = major;
+    }
+
+    // getters & setters
+    public int getYearOfStudy(){
+        return this.yearOfStudy;
+    }
+
+    public void setYearOfStudy(int yearOfStudy){
+        this.yearOfStudy = yearOfStudy;
+    }
+
+    public String getMajor(){
+        return this.major;
+    }
+
+    public void setMajor(String major){
+        this.major = major;
+    }
+
+    public ArrayList<InternshipApplication> getAppliedInternships(){
+        return this.appliedInternships;
+    }
 }
