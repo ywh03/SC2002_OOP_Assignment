@@ -7,8 +7,9 @@ public class CompanyRepController {
         companyRep.setApproved(false);
     }
 
-    public void register(String userId, String fullName, String password, String companyName,
+    public boolean register(String userId, String fullName, String password, String companyName,
     String department,String position){
         CompanyRep(userId, fullName, password, companyName, department,position);
+        return True;
     }
 }
