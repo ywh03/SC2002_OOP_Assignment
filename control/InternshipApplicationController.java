@@ -102,9 +102,4 @@ public class InternshipApplicationController{
             System.out.println("Application not found.");
         }
     }
-
-
-
-
-
 }
