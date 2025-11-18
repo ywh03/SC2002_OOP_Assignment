@@ -5,7 +5,7 @@ import entity.Identifiable;
 import java.io.*;
 import java.util.*;
 
-public abstract class Repository<T extends Serializable & Identifiable> {
+public class Repository<T extends Serializable & Identifiable> {
     protected final String filepath;
     protected List<T> entities;
 
