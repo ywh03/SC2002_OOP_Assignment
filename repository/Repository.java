@@ -12,6 +12,7 @@ public abstract class Repository<T extends Serializable> {
         this.entities = loadFromFile();
     }
 
+    @SuppressWarnings()
     protected List<T> loadFromFile() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filepath))) {
             return (List<T>)ois.readObject();

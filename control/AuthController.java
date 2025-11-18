@@ -11,32 +11,30 @@ public class AuthController{
         this.loggedIn = false; // dafault
     }
     
-    public boolean login(String userID, String password) {
+    public User login(String userID, String password) {
         if (user.getUserID().equals(userID) && user.getPassword().equals(password)) {
             loggedIn = true;
-            System.out.println(user.getFullName() + " has logged in.");
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean logout() {
+        if (loggedIn) {
+            loggedIn = false;
             return true;
         } else {
-            System.out.println("Wrong password.");
             return false;
         }
     }
 
-    public void logout() {
-        if (loggedIn) {
-            loggedIn = false;
-            System.out.println(user.getFullName() + " has logged out.");
-        } else {
-            System.out.println("No user is currently logged in.");
-        }
-    }
-
-    public void changePassword(String newPassword) {
+    public boolean changePassword(String newPassword) {
         if (loggedIn) {
             user.setPassword(newPassword);
-            System.out.println("Password changed successfully.");
+            return true;
         } else {
-            System.out.println("No used is logged in.");
+            return false;
         }
     }
 }
