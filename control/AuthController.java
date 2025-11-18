@@ -1,10 +1,13 @@
 package control;
 
+import entity.CompanyRep;
 import entity.User;
+import repository.UserRepository;
 
 public class AuthController{
     private User user;
     private boolean loggedIn;
+    private UserRepository userRepository;
 
     public AuthController(User user) {
         this.user = user;
@@ -36,5 +39,20 @@ public class AuthController{
         } else {
             return false;
         }
+    }
+
+    public boolean registerCompanyRep(String userId, String fullName, String password, String companyName, String department,String position){
+
+        User existingUser = userRepository.findById(userId);
+        if (existingUser != null) {
+            return false;
+        }
+
+        CompanyRep rep = new CompanyRep(userId, fullName, password, companyName, department, position);
+        rep.setApproved(false);
+
+        userRepository.save(rep);
+
+        return true;
     }
 }

@@ -1,16 +1,18 @@
 package entity;
 
+import entity.enums.ApplicationStatus;
+
 import java.io.Serializable;
 
 public class InternshipApplication implements Serializable, Identifiable {
-    private String internshipApplicationID;
+    private String internshipApplicationId;
     private Internship internship;
     private ApplicationStatus applicationStatus; // successful, pending, rejected
     private boolean offerAccepted; 
     private Student student;
 
     public InternshipApplication(String internshipApplicationId, Internship internship, Student student) {
-        this.internshipApplicationID = internshipApplicationId;
+        this.internshipApplicationId = internshipApplicationId;
         this.internship = internship;
         this.student = student;
         this.applicationStatus = ApplicationStatus.PENDING; //default is set to pending
@@ -19,10 +21,10 @@ public class InternshipApplication implements Serializable, Identifiable {
 
     @Override
     public String getId() {
-        return this.internshipApplicationID;
+        return this.internshipApplicationId;
     }
 
-    public String getInternshipApplicationID() {return internshipApplicationID;}
+    public String getInternshipApplicationId() {return internshipApplicationId;}
     public Internship getInternship() {return internship;}
     public void setInternship(Internship internship) {this.internship = internship;}
     public ApplicationStatus getApplicationStatus() {return applicationStatus;}

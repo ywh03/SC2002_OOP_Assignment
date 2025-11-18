@@ -35,16 +35,18 @@ public class LoginBoundary {
         System.out.println("=== Company Rep Registration ===");
         String userId = console.readLine("Enter Company Rep ID (Email): ");
         String fullName = console.readLine("Enter Company Rep Full Name: ");
-        String companyName = console.readLine("Enter Company Rep Company Name: ");
         String password = console.readLine("Enter Company Rep Password: ");
+        String companyName = console.readLine("Enter Company Rep Company Name: ");
+        String department = console.readLine("Enter Company Rep Department: ");
+        String position = console.readLine("Enter Company Rep Position: ");
 
-        boolean success = authController.registerCompanyRep(userId, password, fullName, companyName);
+        boolean success = authController.registerCompanyRep(userId, password, fullName, companyName, department, position);
 
         System.out.println("Registration submitted, awaiting staff approval");
     }
 
     public void handlePasswordChange(User user) {
-        if (user === null) {
+        if (user == null) {
             System.out.println("No user is currently logged in.");
             return;
         }
