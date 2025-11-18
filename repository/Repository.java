@@ -54,4 +54,8 @@ public abstract class Repository<T extends Serializable> {
         saveToFile();
     }
 
+    public ArrayList<T> getAll() {
+        return new ArrayList<>(entities); // added this to return a copy of all objects,, check if getall = load
+    }
+
 }
