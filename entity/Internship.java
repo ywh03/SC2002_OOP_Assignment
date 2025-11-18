@@ -6,7 +6,7 @@ import entity.enums.InternshipStatus;
 import entity.enums.InternshipLevel;
 import entity.enums.ApplicationStatus;
 
-public class Internship implements Serializable {
+public class Internship implements Serializable, Identifiable {
     private String internshipId;
     private int numOfSlots;
     private String internshipTitle;
