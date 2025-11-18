@@ -74,5 +74,4 @@ public abstract class Repository<T extends Serializable & Identifiable> {
                 .max()
                 .orElse(0);
     }
-
 }
