@@ -62,8 +62,6 @@ public class Internship implements Serializable {
     public void setCompRepIC(CompanyRep compRepIC) {this.compRepIC = compRepIC;}
     public int getNumOfSlots() {return numOfSlots;}
     public void setNumOfSlots(int numOfSlots) {this.numOfSlots = numOfSlots;}
-    public String getInternshipId() {return internshipId;}
-    public void setInternshipId(String internshipId) {this.internshipId = internshipId;}
     public boolean getVisibility() {return this.visibility;}
     public void setVisibility(boolean visibility) {this.visibility = visibility;}
 
