@@ -1,3 +1,5 @@
+package control;
+
 public class InternshipController {
     public boolean toggleVisibility(Internship internship){
         internship.setVisibility(!internship.getVisibility());

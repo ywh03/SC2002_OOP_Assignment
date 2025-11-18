@@ -1,3 +1,5 @@
+package control;
+
 public class CompanyRepController {
     public void authoriseCompanyRep(CompanyRep companyRep){
         companyRep.setApproved(true);
