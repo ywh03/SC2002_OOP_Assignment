@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Internship implements Serializable {
+public class Internship implements Serializable, Identifiable {
+    private String internshipID;
     private int numOfSlots;
     private String internshipTitle;
     private String description;
@@ -18,7 +19,8 @@ public class Internship implements Serializable {
 
     private List<InternshipApplication> internshipApplications; // all apps rather than just accepted ones
 
-    public Internship(String internshipTitle, String description, String level, String preferredMajor, Date appOpenDate, Date appCloseDate, String internshipStatus, String companyName, String compRepIC, int numOfSlots) {
+    public Internship(String internshipID, String internshipTitle, String description, String level, String preferredMajor, Date appOpenDate, Date appCloseDate, String internshipStatus, String companyName, String compRepIC, int numOfSlots) {
+        this.internshipID = internshipID;
         this.internshipTitle = internshipTitle;
         this.description = description;
         this.level = level;
@@ -30,6 +32,11 @@ public class Internship implements Serializable {
         this.compRepIC = compRepIC;
         this.numOfSlots = numOfSlots;
         this.internshipApplications = new ArrayList<>();
+    }
+
+    @Override
+    public String getId() {
+        return this.internshipID;
     }
 
     public String getInternshipTitle() {return internshipTitle;}

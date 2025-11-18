@@ -2,7 +2,7 @@ package entity;
 
 import java.io.Serializable;
 
-public abstract class User implements Serializable {
+public abstract class User implements Serializable, Identifiable {
     private String userID;
     private String fullName;
     private String password;
@@ -12,6 +12,9 @@ public abstract class User implements Serializable {
         this.fullName = fullName;
         this.password = password;
     }
+
+    @Override
+    public String getId() {return userID;}
 
     public String getUserID() {return userID;}
     public void setUserID(String userID) {this.userID = userID;}
