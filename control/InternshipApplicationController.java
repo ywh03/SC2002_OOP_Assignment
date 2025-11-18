@@ -63,8 +63,8 @@ public class InternshipApplicationController{
                 return false;
             }
 
-        // haven't applied --> create new app AAAAAAAAAAAAA I DGAF ALR I CANNOT GET THIS TO WORK WITHOUT THE ID BEING SETTLED.
-        InternshipApplication newIntApp = new InternshipApplication(nextInternshipApplicationId++, internship, student);
+        String newId = internshipApplicationRepository.generateNextId();
+        InternshipApplication newIntApp = new InternshipApplication(newId, internship, student);
         internshipApplicationRepository.save(newIntApp);
         internship.getInternshipApplications().add(newIntApp); // also add to internship's list
         internshipRepository.save(internship);
