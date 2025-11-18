@@ -1,9 +1,11 @@
 package repository;
 
+import entity.Identifiable;
+
 import java.io.*;
 import java.util.*;
 
-public abstract class Repository<T extends Serializable> {
+public abstract class Repository<T extends Serializable & Identifiable> {
     protected final String filepath;
     protected List<T> entities;
 
@@ -12,10 +14,10 @@ public abstract class Repository<T extends Serializable> {
         this.entities = loadFromFile();
     }
 
-    @SuppressWarnings("")
+    @SuppressWarnings("unchecked")
     protected List<T> loadFromFile() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filepath))) {
-            return (List<T>)ois.readObject();
+            return (List<T>) ois.readObject();
         } catch (FileNotFoundException e) {
             return new ArrayList<>();
         } catch (Exception e) {
@@ -32,13 +34,11 @@ public abstract class Repository<T extends Serializable> {
         }
     }
 
-    protected abstract String getId(T entity);
-
     public void save(T entity) {
-        String id = getId(entity);
+        String id = entity.getId();
 
         for (int i = 0; i < entities.size(); i++) {
-            if (getId(entities.get(i)).equals(id)) {
+            if (entities.get(i).getId().equals(id)) {
                 entities.set(i, entity);
                 saveToFile();
                 return;
@@ -49,9 +49,30 @@ public abstract class Repository<T extends Serializable> {
         saveToFile();
     }
 
+    public T findById(String id) {
+        return entities.stream()
+                .filter(entity -> entity.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public void delete(T entity) {
         entities.remove(entity);
         saveToFile();
+    }
+
+    public List<T> findAll() {
+        return new ArrayList<>(entities);
+    }
+
+    protected int computeMaxNumericId(String prefix) {
+        return entities.stream()
+                .map(Identifiable::getId)
+                .filter(id -> id.startsWith(prefix))
+                .map(id -> id.substring(prefix.length()))
+                .mapToInt(Integer::parseInt)
+                .max()
+                .orElse(0);
     }
 
 }

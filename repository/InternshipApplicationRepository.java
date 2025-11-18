@@ -3,20 +3,15 @@ package repository;
 import entity.InternshipApplication;
 
 public class InternshipApplicationRepository extends Repository<InternshipApplication> {
+    public static final String PREFIX = "APP";
+    private int nextId;
 
     public InternshipApplicationRepository() {
         super("../data/internshipApplications.ser");
+        nextId = computeMaxNumericId(PREFIX) + 1;
     }
 
-    @Override
-    protected String getId(InternshipApplication internshipApplication) {
-        return internshipApplication.getId();
-    }
-
-    public InternshipApplication findById(int id) {
-        return entities.stream()
-                .filter(internshipApplication -> internshipApplication.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public String generateNextId() {
+        return String.format(PREFIX + "%04d", nextId++);
     }
 }

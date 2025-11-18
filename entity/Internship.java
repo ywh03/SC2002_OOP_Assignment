@@ -1,4 +1,6 @@
 package entity;
+import entity.enums.ApplicationStatus;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
