@@ -7,6 +7,10 @@ import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
 import util.ConsoleUtil;
+import java.util.Date;
+import entity.enums.InternshipLevel;
+import entity.enums.Major;
+
 
 import java.util.List;
 
@@ -55,10 +59,22 @@ public class CompanyRepBoundary {
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
-        String location = console.readLine("Location: ");
-        String duration = console.readLine("Duration: ");
-
-        boolean success = internshipController.createInternship(companyRep, title, description, location, duration);
+        String levelInput = console.readLine("Level");
+        // convert to InternshipLevel enum
+        InternshipLevel level = InternshipLevel.valueOf(levelInput.toUpperCase()); 
+        String preferredMajorInput = console.readLine("Preferred Major: ");
+        // convert to Major enum
+        Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
+        String appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
+        String appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        String companyName = companyRep.getCompanyName(); 
+        String compRepId = companyRep.getId(); 
+        String compRepIC = companyRep.getFullName(); 
+        int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
+        
+        
+        boolean success = internshipController.createInternship(compRepId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
+        
         if (success) {
             System.out.println("Internship created.");
         } else {
