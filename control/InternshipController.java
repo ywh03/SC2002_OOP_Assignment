@@ -19,8 +19,8 @@ import util.filter.MajorFilter;
 import util.filter.StatusFilter;
 
 public class InternshipController {
-    private InternshipRepository internshipRepository;
-    private UserRepository userRepository;
+    private final InternshipRepository internshipRepository;
+    private final UserRepository userRepository;
 
     public InternshipController(InternshipRepository internshipRepo, UserRepository userRepo){
         this.internshipRepository = internshipRepo;
@@ -28,23 +28,26 @@ public class InternshipController {
     }
     public boolean toggleVisibility(Internship internship){
         internship.setVisibility(!internship.getVisibility());
+        return true;
     }
 
-    public void approveInternship(Internship internship){
+    public boolean approveInternship(Internship internship){
         internship.setInternshipStatus(InternshipStatus.APPROVED);
+        return true;
     }
 
-    public void rejectInternship(Internship internship){
+    public boolean rejectInternship(Internship internship){
         internship.setInternshipStatus(InternshipStatus.REJECTED);
+        return true;
     }
 
-    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, String appOpenDate, String appCloseDate, InternshipStatus internshipStatus, String companyName, String compRepIC, int numOfSlots){
+    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, InternshipStatus internshipStatus, String companyName, CompanyRep compRepIC, int numOfSlots){
         Internship internship = new Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
         internshipRepository.save(internship);
         return true;
     }
 
-    public void editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+    public boolean editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
         Internship internship = internshipRepository.findById(internshipId);
         internship.setInternshipTitle(title);
         internship.setDescription(description);
@@ -55,6 +58,8 @@ public class InternshipController {
         internship.setCompanyName(companyName);
         internship.setCompRepIC(compRepIC);
         internship.setNumOfSlots(numOfSlots);
+
+        return true;
     }
 
     public ArrayList<Internship> generateReport(ArrayList<Filter> filters){
