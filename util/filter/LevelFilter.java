@@ -13,6 +13,6 @@ public class LevelFilter implements Filter {
 
     @Override
     public boolean matches(Internship internship) {
-        return internship.getInternshipLevel().equals(internshipLevel);
+        return internship.getLevel().equals(internshipLevel);
     }
 }

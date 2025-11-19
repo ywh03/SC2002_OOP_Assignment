@@ -17,9 +17,4 @@ public class CareerCentreStaff extends User{
     public void setStaffDepartment(String staffDepartment){
         this.staffDepartment = staffDepartment;
     }
-
-    // methods
-    public void generateReport(){
-        // HELP******
-    }
 }
