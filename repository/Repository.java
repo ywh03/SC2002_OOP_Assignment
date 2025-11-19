@@ -61,7 +61,7 @@ public class Repository<T extends Serializable & Identifiable> {
         saveToFile();
     }
 
-    public List<T> findAll() {
+    public ArrayList<T> findAll() {
         return new ArrayList<>(entities);
     }
 
