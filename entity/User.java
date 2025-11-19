@@ -2,7 +2,7 @@ package entity;
 
 import java.io.Serializable;
 
-public abstract class User implements Serializable, Identifiable {
+public abstract class User implements Serializable, Identifiable, Notifiable {
     private String userId;
     private String fullName;
     private String password;

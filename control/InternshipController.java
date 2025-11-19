@@ -56,7 +56,7 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.APPROVED);
-
+        internshipRepository.save(internship);
         notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was approved.");
 
         return true;
@@ -67,7 +67,7 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.REJECTED);
-
+        internshipRepository.save(internship);
         notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was rejected.");
 
         return true;
@@ -91,6 +91,7 @@ public class InternshipController {
         internship.setCompRepIC(compRepIC);
         internship.setNumOfSlots(numOfSlots);
 
+        internshipRepository.save(internship);
         return true;
     }
 
@@ -134,7 +135,7 @@ public class InternshipController {
                     return true;
                 }
             })
-            .collect(Collectors.toList()); 
+            .toList();
         return new ArrayList<>(availableInternships);
     }
 

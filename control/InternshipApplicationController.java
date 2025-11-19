@@ -27,7 +27,13 @@ public class InternshipApplicationController {
 
     private String careerCenterStaffId;
 
-    public InternshipApplicationController() { // empty constructor, dont create a new repo lol
+    public InternshipApplicationController(InternshipApplicationRepository internshipApplicationRepository, InternshipRepository internshipRepository, UserRepository userRepository) { // empty constructor, dont create a new repo lol
+
+        this.internshipApplicationRepository = internshipApplicationRepository;
+        this.internshipRepository = internshipRepository;
+        this.userRepository = userRepository;
+        this.notificationManager = new NotificationManager();
+
     }
 
     public void setUserRepository(UserRepository userRepository) {

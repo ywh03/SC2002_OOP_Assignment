@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class UserRepository extends Repository<User> {
 
     public UserRepository() {
-        super("../data/users.ser");
+        super("data/users.ser");
     }
 
     public ArrayList<CompanyRep> getAllCompanyReps() {

@@ -5,7 +5,7 @@ import java.util.List;
 
 import entity.Notification;
 
-public class CompanyRep extends User implements Notifiable{
+public class CompanyRep extends User {
     private boolean approved = false;
     private int numOfInternships = 0;
     private String companyName;

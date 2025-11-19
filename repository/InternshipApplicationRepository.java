@@ -7,7 +7,7 @@ public class InternshipApplicationRepository extends Repository<InternshipApplic
     private int nextId;
 
     public InternshipApplicationRepository() {
-        super("../data/internshipApplications.ser");
+        super("data/internshipApplications.ser");
         nextId = computeMaxNumericId(PREFIX) + 1;
     }
 

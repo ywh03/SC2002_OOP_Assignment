@@ -5,7 +5,7 @@ import java.util.List;
 
 import entity.Notification;
 
-public class CareerCentreStaff extends User implements Notifiable{
+public class CareerCentreStaff extends User {
     private String staffDepartment;
     private List<Notification> notifications = new ArrayList<>();
 
