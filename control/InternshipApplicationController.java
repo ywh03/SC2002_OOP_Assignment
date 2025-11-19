@@ -1,6 +1,7 @@
 package control;
 
 import entity.InternshipApplication;
+import entity.CareerCentreStaff;
 import entity.Internship;
 import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
@@ -12,6 +13,7 @@ import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
 import manager.NotificationManager;
+import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -130,7 +132,7 @@ public class InternshipApplicationController {
         internshipRepository.save(internship);
         System.out.println(student.getFullName() + " applied for " + internship.getInternshipTitle());
 
-        notificationManager.sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
+        NotificationManager.getInstance().sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
 
         return true;
     }
@@ -142,7 +144,11 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
+<<<<<<< HEAD
             notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
+=======
+            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
+>>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
 
             return true;
         }
@@ -156,7 +162,11 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
+<<<<<<< HEAD
             notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
+=======
+            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
+>>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
 
             return true;
         }
@@ -174,9 +184,21 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
+<<<<<<< HEAD
             if (careerCenterStaffId != null) {
                 notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
             }
+=======
+            List<CareerCentreStaff> allStaff = userRepository.findAll().stream()
+                                            .filter(user -> user instanceof CareerCentreStaff) // only CareerCentreStaff
+                                            .map(user -> (CareerCentreStaff) user)            // cast to CareerCentreStaff
+                                            .toList();;
+            for (CareerCentreStaff staff : allStaff) {
+                NotificationManager.getInstance().sendNotification(staff.getId(), "A withdrawal request has been submitted for internship \"" 
+                        + intApp.getInternship().getInternshipTitle() + "\".");
+            }
+
+>>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
