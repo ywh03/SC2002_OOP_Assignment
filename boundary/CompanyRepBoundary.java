@@ -7,6 +7,7 @@ import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
 import entity.Student;
+import entity.Notification;
 import util.ConsoleUtil;
 
 import java.text.ParseException;
@@ -22,7 +23,7 @@ import entity.enums.Major;
 
 import java.util.List;
 
-import Manager.NotificationManager;
+import manager.NotificationManager;
 
 public class CompanyRepBoundary {
 
