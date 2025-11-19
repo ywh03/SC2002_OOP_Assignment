@@ -12,6 +12,7 @@ import entity.enums.ApplicationStatus;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
+import entity.Notification;
 import util.ConsoleUtil;
 import util.filter.Filter;
 import util.filter.LevelFilter;
@@ -21,7 +22,7 @@ import util.filter.StatusFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import Manager.NotificationManager;
+import manager.NotificationManager;
 
 public class CareerCentreStaffBoundary {
 
