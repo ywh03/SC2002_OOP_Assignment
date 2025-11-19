@@ -8,6 +8,8 @@ import repository.InternshipRepository;
 import entity.Student;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -198,31 +200,15 @@ public class InternshipApplicationController{
         return true;
     }
 
-    public String displayInternshipApplications(String internshipId) {
-        Internship internship = internshipRepository.findById(internshipId);
-        if (internship == null) { // no such internship
-            return "Internship is not found for InternshipID: " + internshipId;
+    public ArrayList<InternshipApplication> getInternshipApplications(String internshipId) {
+    ArrayList<InternshipApplication> internshipApplications = new ArrayList<>();
+
+    for (InternshipApplication intApp : internshipApplicationRepository.findAll()) {
+        if (intApp.getInternship().getId().equals(internshipId)) {
+            internshipApplications.add(intApp);
         }
+    }
 
-        // no apps for this internship
-        if (internship.getInternshipApplications() == null || internship.getInternshipApplications().isEmpty()) {
-            return "No applications has been submitted for this internship: " + internship.getInternshipTitle();
-        }
-
-        // formatted string of all applications -- I HAVE CONFESSION IDK WHAT FORMAT WE USING. this is chat :(((
-        StringBuilder sb = new StringBuilder();
-        sb.append("Applications for ").append(internship.getInternshipTitle())
-        .append(" (").append(internship.getId()).append("):\n");
-        sb.append("----------------------------------------------------------\n");
-
-        for (InternshipApplication intApp : internship.getInternshipApplications()) {
-            sb.append("Student: ").append(intApp.getStudent().getFullName())
-            .append(", ID: ").append(intApp.getStudent().getId())
-            .append(", Status: ").append(intApp.getApplicationStatus())
-            .append(", Offer Accepted: ").append(intApp.getOfferAccepted())
-            .append("\n");
-        }
-
-        return sb.toString();
-}
+    return internshipApplications;
+    }
 }
