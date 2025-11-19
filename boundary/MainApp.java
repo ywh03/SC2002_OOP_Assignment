@@ -51,13 +51,27 @@ public class MainApp {
         System.out.println("Welcome to the Internship Placement Management System");
 
         while (true) {
-            User user = loginBoundary.handleLogin();
+            System.out.println("\n=== Main Menu ===");
+            System.out.println("1. Login");
+            System.out.println("2. Register as Company Rep");
+            System.out.println("3. Exit");
 
-            if (user == null) {
-                continue;
+            String choice = console.readLine("Enter choice: ");
+
+            switch (choice) {
+                case "1" -> {
+                    User user = loginBoundary.handleLogin();
+                    if (user != null) {
+                        routeUser(user);
+                    }
+                }
+                case "2" -> loginBoundary.handleRegistration();
+                case "3" -> {
+                    System.out.println("Goodbye!");
+                    return;
+                }
+                default -> System.out.println("Invalid choice.");
             }
-
-            routeUser(user);
         }
     }
 
