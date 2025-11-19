@@ -130,39 +130,7 @@ public class CompanyRepBoundary {
 
         System.out.println("\n=== Editable Internship Postings ===");
 
-        System.out.printf(
-                "%-8s | %-25s | %-15s | %-30s | %-12s | %-12s | %-6s | %-10s | %-20s | %s\n",
-                "ID",
-                "Title",
-                "Level",
-                "Major",
-                "Open Date",
-                "Close Date",
-                "Slots",
-                "Visible",
-                "Status",
-                "Company"
-        );
-
-        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-
-        for (Internship i : pendingInternships) {
-            System.out.printf(
-                    "%-8s | %-25s | %-15s | %-30s | %-12s | %-12s | %-6s | %-10s | %-20s | %s\n",
-                    i.getId(),
-                    truncate(i.getInternshipTitle(), 25),
-                    i.getLevel(),
-                    i.getPreferredMajor(),
-                    formatDate(i.getAppOpenDate()),
-                    formatDate(i.getAppCloseDate()),
-                    i.getNumOfSlots(),
-                    i.getVisibility() ? "YES" : "NO",
-                    i.getInternshipStatus(),
-                    i.getCompanyName()
-            );
-        }
-
-        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        printInternshipTable(pendingInternships);
 
         String internshipId = console.readLine("Enter ID of posting: ");
 
@@ -227,16 +195,7 @@ public class CompanyRepBoundary {
         return new java.text.SimpleDateFormat("dd/MM/yyyy").format(d);
     }
 
-    private void displayInternshipListings(CompanyRep companyRep) {
-        List<Internship> internships = internshipController.getInternshipListings(companyRep.getId());
-
-        if (internships.isEmpty()) {
-            System.out.println("You have no internship postings.");
-            return;
-        }
-
-        System.out.println("\n=== My Internship Postings ===");
-
+    private void printInternshipTable(List<Internship> internships) {
         System.out.printf(
                 "%-8s | %-25s | %-15s | %-30s | %-12s | %-12s | %-6s | %-10s | %-20s | %s\n",
                 "ID",
@@ -272,6 +231,20 @@ public class CompanyRepBoundary {
         System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
+    private void displayInternshipListings(CompanyRep companyRep) {
+        List<Internship> internships = internshipController.getInternshipListings(companyRep.getId());
+
+        if (internships.isEmpty()) {
+            System.out.println("You have no internship postings.");
+            return;
+        }
+
+        printInternshipTable(internships);
+
+        System.out.println("\n=== My Internship Postings ===");
+
+    }
+
     private void toggleVisibility(CompanyRep companyRep) {
         String internshipId = console.readLine("Internship ID: ");
 
@@ -286,6 +259,7 @@ public class CompanyRepBoundary {
     }
 
     private void displayApplications(CompanyRep companyRep) {
+
         String internshipId = console.readLine("Internship ID: ");
         List<InternshipApplication> internshipApplications = internshipController.getApplications(internshipId);
 
