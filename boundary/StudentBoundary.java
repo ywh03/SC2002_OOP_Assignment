@@ -29,6 +29,7 @@ public class StudentBoundary {
 
     private final InternshipController internshipController;
     private final InternshipApplicationController internshipApplicationController;
+    private final LoginBoundary loginBoundary;
     private final ConsoleUtil console;
 
     /**
@@ -38,9 +39,10 @@ public class StudentBoundary {
      * @param internshipApplicationController controller responsible for managing applications
      * @param console helper class for safe console input
      */
-    public StudentBoundary(InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
+    public StudentBoundary(InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console, LoginBoundary loginBoundary) {
         this.internshipController = internshipController;
         this.internshipApplicationController = internshipApplicationController;
+        this.loginBoundary = loginBoundary;
         this.console = console;
     }
 
@@ -58,7 +60,8 @@ public class StudentBoundary {
             System.out.println("4. Withdraw Application");
             System.out.println("5. View Notifications");
             System.out.println("6. Accept / Reject Internship Offers");
-            System.out.println("7. Logout");
+            System.out.println("7. Change Password");
+            System.out.println("8. Logout");
 
             String choice = console.readLine("Enter choice: ");
 
@@ -69,7 +72,8 @@ public class StudentBoundary {
                 case "4" -> withdrawRequest(student);
                 case "5" -> displayNotifications(student);
                 case "6" -> handleInternshipOffers(student);
-                case "7" -> {
+                case "7" -> loginBoundary.handlePasswordChange(student);
+                case "8" -> {
                     System.out.println("Logging out...");
                     return;
                 }

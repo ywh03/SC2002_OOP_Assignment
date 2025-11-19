@@ -41,6 +41,7 @@ public class CompanyRepBoundary {
     private final CompanyRepController companyRepController;
     private final InternshipController internshipController;
     private final InternshipApplicationController internshipApplicationController;
+    private final LoginBoundary loginBoundary;
     private final ConsoleUtil console;
 
     /**
@@ -51,10 +52,11 @@ public class CompanyRepBoundary {
      * @param internshipApplicationController controller for application processing
      * @param console utility helper for console input
      */
-    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
+    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console, LoginBoundary loginBoundary) {
         this.companyRepController = companyRepController;
         this.internshipController = internshipController;
         this.internshipApplicationController = internshipApplicationController;
+        this.loginBoundary = loginBoundary;
         this.console = console;
     }
 
@@ -73,8 +75,8 @@ public class CompanyRepBoundary {
             System.out.println("5. Accept/Reject Applicant");
             System.out.println("6. View My Postings");
             System.out.println("7. View Notifications");
-
-            System.out.println("8. Logout");
+            System.out.println("8: Change Password");
+            System.out.println("9. Logout");
 
             String choice = console.readLine("Choose an option: ");
 
@@ -86,7 +88,8 @@ public class CompanyRepBoundary {
                 case "5" -> processApplication(companyRep);
                 case "6" -> displayInternshipListings(companyRep);
                 case "7" -> displayNotifications(companyRep);
-                case "8" -> {
+                case "8" -> loginBoundary.handlePasswordChange(companyRep);
+                case "9" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -190,54 +193,146 @@ public class CompanyRepBoundary {
             return;
         }
 
-        // enter the details 
-        String title = console.readLine("Title: ");
-        String description = console.readLine("Description: ");
+        System.out.println("\n=== Current Internship Details ===");
+        System.out.println("1. Title: " + internshipToEdit.getInternshipTitle());
+        System.out.println("2. Description: " + internshipToEdit.getDescription());
+        System.out.println("3. Level: " + internshipToEdit.getLevel());
+        System.out.println("4. Preferred Major: " + internshipToEdit.getPreferredMajor());
+        System.out.println("5. Application Open Date: " + internshipToEdit.getAppOpenDate());
+        System.out.println("6. Application Close Date: " + internshipToEdit.getAppCloseDate());
+        System.out.println("7. Number of Slots: " + internshipToEdit.getNumOfSlots());
 
-        InternshipLevel internshipLevel = null;
-        while (internshipLevel == null){
-            try {
-                String levelInput = console.readLine("Level (BASIC, INTERMEDIATE, ADVANCED): ");
-                internshipLevel = InternshipLevel.valueOf(levelInput.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid level. Please try again.");
+        boolean editing = true;
+        while (editing) {
+            System.out.println("\n=== Edit Menu ===");
+            System.out.println("Enter the number of the field you want to edit (1-7), or 0 to finish:");
+            
+            int choice = console.readInt("Your choice: ");
+
+            switch (choice) {
+                case 0:
+                    editing = false;
+                    break;
+                    
+                case 1:
+                    String newTitle = console.readLine("New Title: ");
+                    internshipToEdit.setInternshipTitle(newTitle);
+                    System.out.println("Title updated.");
+                    break;
+                    
+                case 2:
+                    String newDescription = console.readLine("New Description: ");
+                    internshipToEdit.setDescription(newDescription);
+                    System.out.println("Description updated.");
+                    break;
+                    
+                case 3:
+                    InternshipLevel newLevel = null;
+                    while (newLevel == null) {
+                        try {
+                            String levelInput = console.readLine("New Level (BASIC, INTERMEDIATE, ADVANCED): ");
+                            newLevel = InternshipLevel.valueOf(levelInput.trim().toUpperCase());
+                            internshipToEdit.setLevel(newLevel);
+                            System.out.println("Level updated.");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid level. Please try again.");
+                        }
+                    }
+                    break;
+                    
+                case 4:
+                    Major newMajor = null;
+                    while (newMajor == null) {
+                        try {
+                            String majorInput = console.readLine("New Preferred Major: ");
+                            newMajor = Major.valueOf(majorInput.trim().toUpperCase());
+                            internshipToEdit.setPreferredMajor(newMajor);
+                            System.out.println("Preferred Major updated.");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid major. Please try again.");
+                        }
+                    }
+                    break;
+                    
+                case 5:
+                    Date newOpenDate = readValidatedLegacyDate("New Application Open Date (DD/MM/YYYY): ");
+                    internshipToEdit.setAppOpenDate(newOpenDate);
+                    System.out.println("Application Open Date updated.");
+                    break;
+                    
+                case 6:
+                    Date newCloseDate = readValidatedLegacyDate("New Application Close Date (DD/MM/YYYY): ");
+                    internshipToEdit.setAppCloseDate(newCloseDate);
+                    System.out.println("Application Close Date updated.");
+                    break;
+                    
+                case 7:
+                    int newSlots = console.readInt("New Number of Slots: ");
+                    internshipToEdit.setNumOfSlots(newSlots);
+                    System.out.println("Number of Slots updated.");
+                    break;
+                    
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 0 and 7.");
             }
         }
 
-        Major preferredMajor = null;
-        while (preferredMajor == null){
-            try {
-                String majorInput = console.readLine("Preferred Major: ");
-                preferredMajor = Major.valueOf(majorInput.trim().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid major. Please try again.");
-            }
-        }
+        boolean success = internshipController.editInternship(
+            internshipId,
+            internshipToEdit.getInternshipTitle(),
+            internshipToEdit.getDescription(),
+            internshipToEdit.getLevel(),
+            internshipToEdit.getPreferredMajor(),
+            internshipToEdit.getAppOpenDate(),
+            internshipToEdit.getAppCloseDate(),
+            internshipToEdit.getCompanyName(),
+            companyRep,
+            internshipToEdit.getNumOfSlots()
+        );
 
-        Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
-        Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
-
-        // boolean datesValid = false;
-        // while (!datesValid) {
-        //     Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
-        //     Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
-        //     if (appOpenDate.compareTo(appCloseDate) > 0) {
-        //         System.out.println("Error: The Application Closing Date cannot be earlier than the Application Opening Date. Please re-enter both dates.");
-        //     } else {
-        //         datesValid = true;
-        //     }
-        // }
-        
-        String companyName = companyRep.getCompanyName();
-        int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
-        
-        boolean success = internshipController.editInternship(internshipId,title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
-        
         if (success) {
             System.out.println("Internship created.");
         } else {
             System.out.println("Failed to create internship.");
         }
+
+        // // enter the details 
+        // String title = console.readLine("Title: ");
+        // String description = console.readLine("Description: ");
+
+        // InternshipLevel internshipLevel = null;
+        // while (internshipLevel == null){
+        //     try {
+        //         String levelInput = console.readLine("Level (BASIC, INTERMEDIATE, ADVANCED): ");
+        //         internshipLevel = InternshipLevel.valueOf(levelInput.trim().toUpperCase());
+        //     } catch (IllegalArgumentException e) {
+        //         System.out.println("Invalid level. Please try again.");
+        //     }
+        // }
+
+        // Major preferredMajor = null;
+        // while (preferredMajor == null){
+        //     try {
+        //         String majorInput = console.readLine("Preferred Major: ");
+        //         preferredMajor = Major.valueOf(majorInput.trim().toUpperCase());
+        //     } catch (IllegalArgumentException e) {
+        //         System.out.println("Invalid major. Please try again.");
+        //     }
+        // }
+
+        // Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
+        // Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
+        
+        // String companyName = companyRep.getCompanyName();
+        // int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
+        
+        // boolean success = internshipController.editInternship(internshipId,title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
+        
+        // if (success) {
+        //     System.out.println("Internship created.");
+        // } else {
+        //     System.out.println("Failed to create internship.");
+        // }
     }
 
     // Helper functions
