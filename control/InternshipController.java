@@ -3,6 +3,7 @@ package control;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import entity.CompanyRep;
 import entity.Internship;
@@ -10,69 +11,75 @@ import entity.InternshipApplication;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
+import repository.InternshipRepository;
+import repository.UserRepository;
+import util.filter.Filter;
+import util.filter.LevelFilter;
+import util.filter.MajorFilter;
+import util.filter.StatusFilter;
 
 public class InternshipController {
-    private InternshipRepository internshipRepository;
-    private UserRepository userRepository;
+    private final InternshipRepository internshipRepository;
+    private final UserRepository userRepository;
 
-    public InternshipController(InternshipRepository internshipRepo, UserRepositroy userRepo){
+    public InternshipController(InternshipRepository internshipRepo, UserRepository userRepo){
         this.internshipRepository = internshipRepo;
         this.userRepository = userRepo;
     }
     public boolean toggleVisibility(Internship internship){
         internship.setVisibility(!internship.getVisibility());
-    }
-
-    public void approveInternship(Internship internship){
-        internship.setInternshipStatus(InternshipStatus.APPROVED);
-    }
-
-    public void rejectInternship(Internship internship){
-        internship.setInternshipStatus(InternshipStatus.REJECTED);
-    }
-
-    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, Date companyName, String compRepIC, int numOfSlots){
-        Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
         return true;
     }
 
-    public boolean editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, String compRepIC, int numOfSlots){
-        internship = internshipRepository.findById(internshipId);
+    public boolean approveInternship(Internship internship){
+        internship.setInternshipStatus(InternshipStatus.APPROVED);
+        return true;
+    }
+
+    public boolean rejectInternship(Internship internship){
+        internship.setInternshipStatus(InternshipStatus.REJECTED);
+        return true;
+    }
+
+    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, InternshipStatus internshipStatus, String companyName, CompanyRep compRepIC, int numOfSlots){
+        Internship internship = new Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
+        internshipRepository.save(internship);
+        return true;
+    }
+
+    public boolean editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+        Internship internship = internshipRepository.findById(internshipId);
         internship.setInternshipTitle(title);
         internship.setDescription(description);
         internship.setLevel(level);
         internship.setPreferredMajor(preferredMajor);
-        internship.setOpenDate(appOpenDate);
-        internship.setCloseDate(appCloseDate);
+        internship.setAppOpenDate(appOpenDate);
+        internship.setAppCloseDate(appCloseDate);
         internship.setCompanyName(companyName);
         internship.setCompRepIC(compRepIC);
         internship.setNumOfSlots(numOfSlots);
+
         return true;
     }
 
-    public HashSet<Internship> generateReport(ArrayList<ArrayList<String>> filters){
+    public ArrayList<Internship> generateReport(ArrayList<Filter> filters){
         HashSet<Internship> filteredInternships = new HashSet<>();
         ArrayList<Internship> internships = this.internshipRepository.findAll();
 
-        for (Internship internship : internships) {
-            boolean matchesMajor = filters.get(0).isEmpty() ||
-                    filters.get(0).stream().anyMatch(f -> new MajorFilter(f).matches(internship));
-
-            boolean matchesLevel = filters.get(1).isEmpty() ||
-                    filters.get(1).stream().anyMatch(f -> new LevelFilter(f).matches(internship));
-
-            boolean matchesStatus = filters.get(2).isEmpty() ||
-                    filters.get(2).stream().anyMatch(f -> new StatusFilter(f).matches(internship));
-
-            if (matchesMajor && matchesLevel && matchesStatus) {
-                filteredInternships.add(internship);
-            }
+        if (filters == null || filters.isEmpty()){
+            return internships;
         }
-        return filteredInternships;
+
+        return (ArrayList<Internship>) internships.stream()
+                .filter(internship -> filters.stream()
+                        .allMatch((filter -> filter.matches(internship)))
+                )
+                .toList();
+
     }
 
     public ArrayList<Internship> getInternshipListings(String compRepId){
-        CompanyRep companyRep = this.userRepository.findById(compRepId);
+        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
         return companyRep.getInternshipInfo();
     }
 
@@ -82,8 +89,12 @@ public class InternshipController {
     }
 
     public ArrayList<Internship> getPendingInternships(String compRepId){
-        CompanyRep companyRep = this.userRepository.findById(compRepId);
-        ArrayList<Internship> pendingInternships = new ArrayList<>(companyRep.getInternshipInfo().stream().filter(i -> i.getInternshipStatus == PENDING));
-        return pendingInternships;
+        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
+
+        List<Internship> pendingInternships = companyRep.getInternshipInfo().stream()
+                .filter(internship -> internship.getInternshipStatus() == InternshipStatus.PENDING)
+                .toList();
+
+        return new ArrayList<>(pendingInternships);
     }
 }
