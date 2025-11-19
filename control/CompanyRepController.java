@@ -8,19 +8,20 @@ public class CompanyRepController {
     public CompanyRepController(UserRepository userRepo){
         this.userRepository = userRepo;
     }
-    
-    public void authoriseCompanyRep(CompanyRep companyRep){
+
+    public void authoriseCompanyRep(CompanyRep companyRepId){
+        companyRep companyRep = this.userRepository.findById(companyRepId);
         companyRep.setApproved(true);
     }
 
-    public void rejectCompanyRep(CompanyRep companyRep){
+    public void rejectCompanyRep(CompanyRep companyRepId){
+        companyRep companyRep = this.userRepository.findById(companyRepId);
         companyRep.setApproved(false);
     }
 
     public ArrayList<CompanyRep> approvedCompanyReps(){
         ArrayList<CompanyRep> companyReps = this.userRepository.findAll();
-        ArrayList<CompanyRep> approvedCompanyReps = new ArrayList<>(companyReps.stream()
-                                                                                .filter(CompanyRep::getApproved).toList());
+        ArrayList<CompanyRep> approvedCompanyReps = new ArrayList<>(companyReps.stream().filter(CompanyRep::getApproved).toList());
         return approvedCompanyReps;
     }
 
