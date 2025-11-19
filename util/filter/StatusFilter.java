@@ -3,7 +3,7 @@ package util.filter;
 import entity.Internship;
 import entity.enums.InternshipStatus;
 
-public class StatusFilter implements  Filter{
+public class StatusFilter implements Filter{
 
     private final InternshipStatus internshipStatus;
 

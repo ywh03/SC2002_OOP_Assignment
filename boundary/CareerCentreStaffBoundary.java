@@ -24,6 +24,18 @@ import java.util.List;
 
 import manager.NotificationManager;
 
+/**
+ * Boundary class responsible for all Career Centre Staff interactions.
+ * <p>
+ * This class handles:
+ * <ul>
+ *     <li>Viewing, approving and rejecting pending CompanyRep registrations</li>
+ *     <li>Viewing, approving and rejecting internship postings</li>
+ *     <li>Processing student withdrawal requests</li>
+ *     <li>Generating internship reports using filters</li>
+ *     <li>Displaying notifications sent to Career Centre Staff</li>
+ * </ul>
+ */
 public class CareerCentreStaffBoundary {
 
     private final InternshipController internshipController;
@@ -31,6 +43,13 @@ public class CareerCentreStaffBoundary {
     private final InternshipApplicationController internshipApplicationController;
     private final ConsoleUtil console;
 
+    /**
+     * Creates a CareerCentreStaffBoundary with the required controllers.
+     *
+     * @param internshipController controller handling internship posting logic
+     * @param companyRepController controller handling CompanyRep registration logic
+     * @param internshipApplicationController controller handling internship applications & withdrawals
+     */
     public CareerCentreStaffBoundary(InternshipController internshipController,  CompanyRepController companyRepController, InternshipApplicationController internshipApplicationController) {
         this.internshipController = internshipController;
         this.companyRepController = companyRepController;
@@ -38,6 +57,11 @@ public class CareerCentreStaffBoundary {
         this.console = new ConsoleUtil();
     }
 
+    /**
+     * Displays the main menu for Career Centre Staff and routes user actions.
+     *
+     * @param careerCentreStaff the logged-in staff member
+     */
     public void displayMenu(CareerCentreStaff careerCentreStaff) {
         while (true) {
             System.out.println("\n=== Career Centre Staff Menu ===");
@@ -65,6 +89,11 @@ public class CareerCentreStaffBoundary {
         }
     }
 
+    /**
+     * Displays all pending CompanyRep registrations and allows staff to approve or reject selected representatives.
+     *
+     * @param careerCentreStaff the staff performing the action
+     */
     private void displayPendingRegistrations(CareerCentreStaff careerCentreStaff) {
         List<CompanyRep> pendingCompanyReps = companyRepController.getPendingRegistrations();
 
@@ -102,6 +131,11 @@ public class CareerCentreStaffBoundary {
         }
     }
 
+    /**
+     * Displays internship postings that are still pending approval, and allows staff to approve or reject them.
+     *
+     * @param careerCentreStaff the staff performing the action
+     */
     private void displayPendingInternships(CareerCentreStaff careerCentreStaff) {
         List<Internship> pendingInternships = internshipController.getPendingInternships();
 
@@ -139,6 +173,11 @@ public class CareerCentreStaffBoundary {
 
     }
 
+    /**
+     * Displays all internship applications currently in PENDING_WITHDRAWAL state and allows staff to approve or reject each withdrawal request.
+     *
+     * @param careerCentreStaff the staff performing the action
+     */
     private void displayPendingWithdrawals(CareerCentreStaff careerCentreStaff) {
         List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getWithdrawalRequests();
 
@@ -175,6 +214,11 @@ public class CareerCentreStaffBoundary {
         }
     }
 
+    /**
+     * Displays a detailed, formatted breakdown of an internship posting, including metadata, applicant list, status and application outcomes.
+     *
+     * @param internship the internship to display
+     */
     private void displayInternship(Internship internship){
         System.out.println("Internship: " + internship.getInternshipTitle() + " (" + internship.getId() + ")");
         System.out.println("Company: " + internship.getCompanyName() + " | Contact: " + internship.getCompRepIC().getFullName());
@@ -192,6 +236,10 @@ public class CareerCentreStaffBoundary {
         System.out.println("---------------------------------------------------");
     }
 
+    /**
+     * Generates and displays an internship report based on selected filters.
+     * The filtering logic is performed by InternshipController.
+     */
     public void displayReport(){
         List<Filter> filters = this.getFilters();
         ArrayList<Internship> report = internshipController.generateReport((ArrayList<Filter>) filters);
@@ -200,6 +248,17 @@ public class CareerCentreStaffBoundary {
         }
     }
 
+    /**
+     * Prompts the staff to select and add filtering criteria for the internship report.
+     * Supported filters:
+     * <ul>
+     *     <li>Major</li>
+     *     <li>Internship level</li>
+     *     <li>Internship status</li>
+     * </ul>
+     *
+     * @return a list of Filter objects to be applied by the controller
+     */
     public List<Filter> getFilters() {
         List<Filter> filters = new ArrayList<>();
         int choice;
@@ -258,6 +317,13 @@ public class CareerCentreStaffBoundary {
         return filters;
     }
 
+    /**
+     * Displays all notifications addressed to the logged-in staff member.
+     * Notifications are retrieved from the NotificationManager.
+     * After displaying, all notifications are marked as read.
+     *
+     * @param careerCentreStaff the staff member whose notifications are shown
+     */
     private void displayNotifications(CareerCentreStaff careerCentreStaff) {
         List<Notification> notifs = NotificationManager.getInstance().getNotifications(careerCentreStaff.getId());
 

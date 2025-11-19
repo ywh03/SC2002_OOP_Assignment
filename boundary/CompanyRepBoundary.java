@@ -7,7 +7,6 @@ import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
 import entity.Notification;
-import entity.enums.InternshipStatus;
 import util.ConsoleUtil;
 
 import java.text.ParseException;
@@ -22,6 +21,20 @@ import java.util.List;
 
 import manager.NotificationManager;
 
+/**
+ * Boundary class responsible for all interactions with a Company Representative user.
+ *
+ * <p>This class handles the user interface and flow control for CompanyRep-related actions,
+ * including:</p>
+ * <ul>
+ *     <li>Creating, editing, and updating internship postings</li>
+ *     <li>Toggling visibility of postings</li>
+ *     <li>Viewing interns' applications for a posting</li>
+ *     <li>Accepting or rejecting internship applications</li>
+ *     <li>Viewing personal notifications</li>
+ *     <li>Displaying tables of internship postings</li>
+ * </ul>
+ */
 public class CompanyRepBoundary {
 
     private final CompanyRepController companyRepController;
@@ -29,6 +42,14 @@ public class CompanyRepBoundary {
     private final InternshipApplicationController internshipApplicationController;
     private final ConsoleUtil console;
 
+    /**
+     * Constructs a boundary class for a Company Representative.
+     *
+     * @param companyRepController controller for CompanyRep registration & management
+     * @param internshipController controller for internship posting operations
+     * @param internshipApplicationController controller for application processing
+     * @param console utility helper for console input
+     */
     public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
         this.companyRepController = companyRepController;
         this.internshipController = internshipController;
@@ -36,6 +57,11 @@ public class CompanyRepBoundary {
         this.console = console;
     }
 
+    /**
+     * Displays the main Company Representative menu and routes user choices to the appropriate boundary methods.
+     *
+     * @param companyRep the logged-in company representative
+     */
     public void displayMenu(CompanyRep companyRep) {
         while (true) {
             System.out.println("\n=== Company Representative Menu ===");
@@ -68,6 +94,12 @@ public class CompanyRepBoundary {
         }
     }
 
+    /**
+     * Handles user input to create a new internship posting.
+     * Collects fields such as title, description, level, major, application dates and slots, then delegates creation to the controller.
+     *
+     * @param companyRep the CompanyRep creating the posting
+     */
     private void createInternship(CompanyRep companyRep) {
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
@@ -119,6 +151,12 @@ public class CompanyRepBoundary {
         }
     }
 
+    /**
+     * Allows a CompanyRep to edit one of their pending internship postings.
+     * Displays all editable postings, validates selection, prompts for updated fields, and delegates update logic to the controller.
+     *
+     * @param companyRep the CompanyRep performing the edit
+     */
     private void editInternship(CompanyRep companyRep) {
         System.out.println("\n=== Edit Internship Posting ===");
         // display all the postings 
@@ -195,15 +233,27 @@ public class CompanyRepBoundary {
 
     // Helper functions
 
+    /**
+     * Shortens a string to a maximum length, appending "..." if truncated.
+     */
     private String truncate(String s, int max) {
         return (s.length() <= max) ? s : s.substring(0, max - 3) + "...";
     }
 
+    /**
+     * Formats a Date into DD/MM/YYYY or returns "-" if null.
+     */
     private String formatDate(Date d) {
         if (d == null) return "-";
         return new java.text.SimpleDateFormat("dd/MM/yyyy").format(d);
     }
 
+    /**
+     * Prints a formatted table of internship postings, including fields such as
+     * ID, title, level, major, dates, slots, visibility and status.
+     *
+     * @param internships list of internships to print
+     */
     private void printInternshipTable(List<Internship> internships) {
         System.out.printf(
                 "%-8s | %-25s | %-15s | %-30s | %-12s | %-12s | %-6s | %-10s | %-20s | %s\n",
@@ -240,6 +290,11 @@ public class CompanyRepBoundary {
         System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
+    /**
+     * Displays all internship postings created by the logged-in CompanyRep in a formatted table view.
+     *
+     * @param companyRep the posting owner whose listings are displayed
+     */
     private void displayInternshipListings(CompanyRep companyRep) {
         List<Internship> internships = internshipController.getInternshipListings(companyRep.getId());
 
@@ -255,6 +310,12 @@ public class CompanyRepBoundary {
 
     }
 
+    /**
+     * Toggles the visibility of a CompanyRep-owned internship posting.
+     * Only the owner of the posting may modify its visibility.
+     *
+     * @param companyRep the posting owner performing the action
+     */
     private void toggleVisibility(CompanyRep companyRep) {
         String internshipId = console.readLine("Internship ID: ");
 
@@ -268,6 +329,13 @@ public class CompanyRepBoundary {
 
     }
 
+    /**
+     * Displays all internship applications for a selected internship posting.
+     * Validates internship existence and ownership before listing applications.
+     *
+     * @param companyRep the CompanyRep viewing applications
+     * @return true if applications were displayed, false if posting was invalid or empty
+     */
     private boolean displayApplications(CompanyRep companyRep) {
 
         String internshipId = console.readLine("Internship ID: ");
@@ -288,6 +356,12 @@ public class CompanyRepBoundary {
         return true;
     }
 
+    /**
+     * Processes a single internship application by accepting or rejecting it.
+     * This is called only after displaying available applications.
+     *
+     * @param companyRep the owner of the internship posting
+     */
     private void processApplication(CompanyRep companyRep) {
         if (!displayApplications(companyRep)) return;
         
@@ -313,6 +387,13 @@ public class CompanyRepBoundary {
 
     }
 
+    /**
+     * Reads and validates a date from user input. Only accepts strict DD/MM/YYYY format.
+     * Re-prompts the user until a valid date is provided.
+     *
+     * @param prompt the message shown to the user
+     * @return the validated Date object
+     */
     private Date readValidatedLegacyDate(String prompt) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         formatter.setLenient(false); // don't accept invalid dates
@@ -331,6 +412,12 @@ public class CompanyRepBoundary {
         return date;
     }
 
+    /**
+     * Displays all notifications for the logged-in CompanyRep.
+     * Unread notifications are marked, and all messages are marked as read after they are displayed.
+     *
+     * @param companyRep the user whose notifications are shown
+     */
     private void displayNotifications(CompanyRep companyRep) {
         List<Notification> notifs = NotificationManager.getInstance().getNotifications(companyRep.getId());
 
