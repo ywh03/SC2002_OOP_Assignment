@@ -52,10 +52,10 @@ public class CompanyRepBoundary {
             switch (choice) {
                 case "1" -> createInternship(rep);
                 case "2" -> editInternship(rep);
-                case "3" -> handleToggleVisibility(rep);
-                case "4" -> handleViewApplicants(rep);
-                case "5" -> handleApplicantDecision(rep);
-                case "6" -> handleViewPostings(rep);
+                case "3" -> toggleVisibility(rep);
+                case "4" -> displayApplications(rep);
+                case "5" -> processApplication(rep);
+                case "6" -> displayInternshipListings(rep);
                 case "7" -> {
                     System.out.println("Logging out...");
                     return;
@@ -179,6 +179,8 @@ public class CompanyRepBoundary {
     }
 
     private void processApplication(CompanyRep companyRep) {
+        // NEED TO PRINT OUT ALL THE APPLICATIONS 
+        
         String internshipApplicationId = console.readLine("Internship Application ID: ");
         String choice = console.readLine("Accept or Reject (A/R)").toUpperCase();
 

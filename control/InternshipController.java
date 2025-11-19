@@ -78,6 +78,10 @@ public class InternshipController {
 
     }
 
+    // get Available Internships 
+
+    // 
+
     public ArrayList<Internship> getInternshipListings(String compRepId){
         CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
         return companyRep.getInternshipInfo();
