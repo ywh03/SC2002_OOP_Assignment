@@ -87,6 +87,16 @@ public class InternshipApplicationController{
                 return false;
             }
         
+        if (!canApply(student)) {
+            System.out.println("You cannot apply for any more internships.");
+            return false;
+        }
+
+        if (!isEligible(student, internship)) {
+            System.out.println("You are not eligible to apply for this internship.");
+            return false;
+        }
+
         // student haven't apply yet -> generate a new id for them
         String newId = internshipApplicationRepository.generateNextId();
         InternshipApplication newIntApp = new InternshipApplication(newId, internship, student);
@@ -185,18 +195,34 @@ public class InternshipApplicationController{
         // rej 6: internship is filled
         if (internship.getInternshipStatus() == InternshipStatus.FILLED) return false;
 
-        // rej 7: student applied for this specific internship already
-        if (internship.getInternshipApplications().stream().anyMatch(a -> a.getInternship().getId().equals(internship.getId()))) {
-            return false;
-        }
-
-        // rej 8: student can't apply for anymore internships
-        if (!canApply(student)) return false;
-
         return true;
     }
 
-    public String displayInternshipApplications(String InternshipId) {
+    public String displayInternshipApplications(String internshipId) {
+        Internship internship = internshipRepository.findById(internshipId);
+        if (internship == null) { // no such internship
+            return "Internship is not found for InternshipID: " + internshipId;
+        }
 
-    }
+        // no apps for this internship
+        if (internship.getInternshipApplications() == null || internship.getInternshipApplications().isEmpty()) {
+            return "No applications has been submitted for this internship: " + internship.getInternshipTitle();
+        }
+
+        // formatted string of all applications -- I HAVE CONFESSION IDK WHAT FORMAT WE USING. this is chat :(((
+        StringBuilder sb = new StringBuilder();
+        sb.append("Applications for ").append(internship.getInternshipTitle())
+        .append(" (").append(internship.getId()).append("):\n");
+        sb.append("----------------------------------------------------------\n");
+
+        for (InternshipApplication intApp : internship.getInternshipApplications()) {
+            sb.append("Student: ").append(intApp.getStudent().getFullName())
+            .append(", ID: ").append(intApp.getStudent().getId())
+            .append(", Status: ").append(intApp.getApplicationStatus())
+            .append(", Offer Accepted: ").append(intApp.getOfferAccepted())
+            .append("\n");
+        }
+
+        return sb.toString();
+}
 }
