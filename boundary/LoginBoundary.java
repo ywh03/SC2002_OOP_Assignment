@@ -1,6 +1,9 @@
 package boundary;
 
+import java.util.List;
+
 import control.AuthController;
+import entity.CareerCentreStaff;
 import entity.CompanyRep;
 import entity.User;
 import util.ConsoleUtil;

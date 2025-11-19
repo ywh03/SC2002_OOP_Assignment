@@ -1,8 +1,12 @@
 package control;
 
+import java.util.List;
+
+import entity.CareerCentreStaff;
 import entity.CompanyRep;
 import entity.User;
 import repository.UserRepository;
+import manager.NotificationManager;
 
 /**
  * Controller responsible for handling authentication-related application logic.
@@ -18,6 +22,7 @@ public class AuthController{
     private User currentUser;
     private boolean loggedIn;
     private UserRepository userRepository;
+    private NotificationManager notificationManager;
 
     /**
      * Creates an AuthController with access to the user repository.
@@ -28,6 +33,7 @@ public class AuthController{
         this.userRepository = userRepository;
         this.currentUser = null;
         this.loggedIn = false; // dafault
+        this.notificationManager = NotificationManager.getInstance();
     }
 
     /**
@@ -102,6 +108,14 @@ public class AuthController{
         companyRep.setApproved(false);
 
         userRepository.save(companyRep);
+
+        List<String> careerStaffIds = userRepository.findAll().stream()
+                                                    .filter(user -> user instanceof CareerCentreStaff) // or check role
+                                                    .map(User::getId)
+                                                    .toList();
+            for (String staffId : careerStaffIds) {
+                notificationManager.sendNotification(staffId, "New company representative registered – awaiting approval.");
+            }
 
         return true;
     }
