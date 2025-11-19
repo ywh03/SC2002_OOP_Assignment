@@ -6,9 +6,11 @@ import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
 import repository.InternshipRepository;
 import entity.Student;
+import entity.User;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
+import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class InternshipApplicationController{
     private InternshipApplicationRepository internshipApplicationRepository;
     private InternshipRepository internshipRepository;
+    private UserRepository userRepository;
 
     public InternshipApplicationController() { 
         internshipApplicationRepository = new InternshipApplicationRepository();
@@ -190,7 +193,12 @@ public class InternshipApplicationController{
         return false;
     }
 
-    public boolean canApply(Student student) {
+    public boolean canApply(String studentId) {
+        User user = userRepository.findById(studentId);
+        if (!(user instanceof Student student)) {
+            return false; // not a student or doesn't exist
+        }
+
         // case 0: student don't exist:
         if (student == null) {
             return false;
@@ -205,7 +213,13 @@ public class InternshipApplicationController{
         return currentIntAppCount < 3; // allow up to 3 active applications
     }
 
-    public boolean isEligible(Student student, Internship internship) {
+    public boolean isEligible(String studentId, String internshipId) {
+        User user = userRepository.findById(studentId);
+        if (!(user instanceof Student student)) return false;
+
+        Internship internship = internshipRepository.findById(internshipId);
+        if (internship == null) return false;
+
         // case 0: student don't exist:
         if (student == null | internship == null) {
             return false;
