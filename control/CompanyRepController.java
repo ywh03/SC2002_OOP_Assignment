@@ -19,7 +19,7 @@ public class CompanyRepController {
         if (companyRep == null) return false;
 
         companyRep.setApproved(true);
-
+        userRepository.save(companyRep);
         NotificationManager.getInstance().sendNotification(companyRepId,"Your company representative registration has been approved.");
 
         return true;
@@ -28,7 +28,7 @@ public class CompanyRepController {
     public boolean rejectCompanyRep(String companyRepId){
         CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
         if (companyRep == null) return false;
-
+        userRepository.save(companyRep);
         companyRep.setApproved(false);
         return true;
     }

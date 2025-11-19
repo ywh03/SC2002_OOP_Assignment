@@ -170,8 +170,17 @@ public class CompanyRepBoundary {
             }
         }
 
-        Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
-        Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
+        boolean datesValid = false;
+        while (!datesValid) {
+            Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
+            Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
+            if (appOpenDate.compareTo(appCloseDate) > 0) {
+                System.out.println("Error: The Application Closing Date cannot be earlier than the Application Opening Date. Please re-enter both dates.");
+            } else {
+                datesValid = true;
+            }
+        }
+        
         String companyName = companyRep.getCompanyName();
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         

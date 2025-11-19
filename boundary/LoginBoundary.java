@@ -34,7 +34,7 @@ public class LoginBoundary {
 
     public void handleRegistration() {
         System.out.println("=== Company Rep Registration ===");
-        String userId = console.readLine("Enter Company Rep ID (Email): ");
+        String userId = console.readLine("Enter Company Rep ID: ");
         String fullName = console.readLine("Enter Company Rep Full Name: ");
         String password = console.readLine("Enter Company Rep Password: ");
         String companyName = console.readLine("Enter Company Rep Company Name: ");
