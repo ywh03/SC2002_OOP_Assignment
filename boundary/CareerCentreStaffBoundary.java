@@ -7,11 +7,13 @@ import entity.CareerCentreStaff;
 import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
+import entity.Student;
 import util.ConsoleUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CareerCentreStaffBoundary () {
+public class CareerCentreStaffBoundary {
 
     private InternshipController internshipController;
     private CompanyRepController companyRepController;
@@ -28,9 +30,9 @@ public class CareerCentreStaffBoundary () {
     public void displayMenu(CareerCentreStaff careerCentreStaff) {
         while (true) {
             System.out.println("\n=== Career Centre Staff Menu ===");
-            System.out.println("1. View / Process Company Rep Registrations");
-            System.out.println("2. View / Process Internship Postings");
-            System.out.println("3. View / Process Application withdrawals");
+            System.out.println("1. View / Approve / Reject Company Rep Registrations");
+            System.out.println("2. View / Approve / Reject Internship Postings");
+            System.out.println("3. Handle Withdrawal Requests");
             System.out.println("4. Generate Internship Report");
             System.out.println("5. Logout");
 
@@ -39,9 +41,8 @@ public class CareerCentreStaffBoundary () {
             switch (choice) {
                 case "1" -> displayPendingRegistrations(staff);
                 case "2" -> displayPendingInternships(staff);
-                case "3" -> displayPendingWithdrawals(staff);
-                case "4" -> displayReport(); // not implemented yet
-                case "5" -> {
+                case "3" -> displayReport();
+                case "4" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -51,7 +52,7 @@ public class CareerCentreStaffBoundary () {
     }
 
     private void displayPendingRegistrations(CareerCentreStaff careerCentreStaff) {
-        List<CompanyRep> pendingCompanyReps = companyRepController.getPendingRegistrations();
+        List<CompanyRep> pendingCompanyReps = companyRepController.getPendingCompanyReps();
 
         if (pendingCompanyReps.isEmpty()) {
             System.out.println("No pending company representative registrations.");
@@ -125,7 +126,7 @@ public class CareerCentreStaffBoundary () {
     }
 
     private void displayPendingWithdrawals(CareerCentreStaff careerCentreStaff) {
-        List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getWithdrawalRequests();
+        List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getPendingWithdrawals();
 
         if (pendingWithdrawals.isEmpty()) {
             System.out.println("No pending withdrawal requests.");
@@ -159,4 +160,69 @@ public class CareerCentreStaffBoundary () {
             System.out.println("Failed to update Withdrawal request.");
         }
     }
+
+    private void displayInternship(){
+        System.out.println("Internship: " + internship.getInternshipTitle() + " (" + internship.getInternshipId() + ")");
+        System.out.println("Company: " + internship.getCompanyName() + " | Contact: " + internship.getCompRepIC().getName());
+        System.out.println("Level: " + internship.getLevel() + " | Preferred Major: " + internship.getPreferredMajor() + " | Slots: " + internship.getNumOfSlots());
+        System.out.println("Application Dates: " + internship.getAppOpenDate() + " - " + internship.getAppCloseDate() + " | Status: " + internship.getInternshipStatus());
+        System.out.println("Applications:");
+        for (InternshipApplication app : internship.getInternshipApplications()) {
+            Student s = app.getStudent();
+            System.out.print("- Student: " + s.getName() + ", Major: " + s.getMajor() + ", Year: " + s.getYearOfStudy() +
+                            ", Status: " + app.getApplicationStatus());
+            if (app.getApplicationStatus() == SUCCESSFUL){
+                System.out.println(", Offer Accepted: " + app.isOfferAccepted());
+            } else {System.out.println();}
+        }
+        System.out.println("---------------------------------------------------");
+    }
+
+    public void displayReport(){
+        ArrayList<ArrayList<String>> filters = this.getFilters();
+        HashSet<Internship> report = InternshipController.generaterReport(filters);
+        for (Internship internship : report){
+            internship.displayInternship();
+        }
+    }
+
+    public ArrayList<ArrayList<String>> getFilters(){
+        ArrayList<ArrayList<String>> filters = new ArrayList<>();
+        filters.add(new ArrayList<>());
+        filters.add(new ArrayList<>());
+        filters.add(new ArrayList<>());
+
+        do {
+            System.out.println("Choose report filters and input parameters:");
+            System.out.println("1. Add major filter");
+            System.out.println("2. Add level filter");
+            System.out.println("3. Add status filter");
+            System.out.println("4. Generate Report");
+            int choice = console.readInt("Please enter a number: ");
+
+            
+            switch(choice){
+                case 1:
+                    String majorFilter = console.readLine("Enter a major: ");
+                    filters.get(0).add(majorFilter.toUpperCase());
+                    break;
+                case 2:
+                    String levelFilter = console.readLine("Enter a level (BASIC, INTERMEDIATE, ADVANCED): ");
+                    filters.get(0).add(levelFilter.toUpperCase());
+                    break;
+                case 3:
+                    String statusFilter = console.readLine("Enter a status (PENDING, APPROVED, REJECTED, FILLED): ");
+                    filters.get(0).add(levelFilter.toUpperCase());
+                    break;
+                case 4:
+                    System.out.println("Generating report...");
+                    break;
+                default:
+                    System.out.println("Please enter a valid number: ");
+            }
+        } while (choice != 4);
+
+        return filters;
+    }
+
 }
