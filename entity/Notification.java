@@ -1,3 +1,6 @@
+import java.io.Serializable;
+import java.util.Date;
+
 public class Notification implements Serializable {
 
     private final String message;

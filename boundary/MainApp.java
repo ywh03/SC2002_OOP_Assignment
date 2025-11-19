@@ -11,12 +11,14 @@ import entity.User;
 import repository.InternshipApplicationRepository;
 import repository.InternshipRepository;
 import repository.UserRepository;
+import util.ConsoleUtil;
 
 public class MainApp {
 
     private final UserRepository userRepository;
     private final InternshipRepository internshipRepository;
     private final InternshipApplicationRepository internshipApplicationRepository;
+    private final ConsoleUtil console;
 
     private final AuthController authController;
     private final InternshipController internshipController;
@@ -32,14 +34,16 @@ public class MainApp {
         userRepository = new UserRepository();
         internshipRepository = new InternshipRepository();
         internshipApplicationRepository = new InternshipApplicationRepository();
+        console = new ConsoleUtil();
 
         authController = new AuthController(userRepository);
         internshipController = new InternshipController(internshipRepository, userRepository);
-        internshipApplicationController = new InternshipApplicationController(internshipApplicationRepository, internshipRepository);
-        companyRepController = new CompanyRepController(userRepository, internshipRepository);
+        internshipApplicationController = new InternshipApplicationController();
+        companyRepController = new CompanyRepController(userRepository);
 
         loginBoundary = new LoginBoundary(authController);
-        studentBoundary = new StudentBoundary(internshipController, internshipApplicationController);
+        studentBoundary = new StudentBoundary(internshipController, internshipApplicationController, console);
+        companyRepBoundary = new CompanyRepBoundary(companyRepController, internshipController, internshipApplicationController, console);
         careerCentreStaffBoundary = new CareerCentreStaffBoundary(internshipController, companyRepController, internshipApplicationController);
     }
 
