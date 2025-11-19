@@ -20,7 +20,7 @@ public class InternshipRepository extends Repository<Internship> {
      * maximum existing numeric ID and incrementing it.
      */
     public InternshipRepository() {
-        super("data/internships.ser");
+        super("./data/internships.ser");
         nextId = computeMaxNumericId(PREFIX) + 1;
     }
 

@@ -68,6 +68,7 @@ public class CompanyRepController {
         if (companyRep == null) return false;
         userRepository.save(companyRep);
         companyRep.setApproved(false);
+        NotificationManager.getInstance().sendNotification(companyRepId,"Your company representative registration has been rejected.");
         return true;
     }
 

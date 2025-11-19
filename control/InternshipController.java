@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import entity.CareerCentreStaff;
 import entity.CompanyRep;
 import entity.Internship;
 import entity.Student;
+import entity.User;
 import entity.InternshipApplication;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
@@ -151,6 +153,15 @@ public class InternshipController {
         String internshipId = internshipRepository.generateNextId();
         Internship internship = new Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
         internshipRepository.save(internship);
+
+        List<String> careerStaffIds = userRepository.findAll().stream()
+                                                    .filter(user -> user instanceof CareerCentreStaff) // or check role
+                                                    .map(User::getId)
+                                                    .toList();
+            for (String staffId : careerStaffIds) {
+                notificationManager.sendNotification(staffId, "New internship posting awaiting approval: \"" + title + "\" at " + companyName + ".");
+            }
+
         return true;
     }
 

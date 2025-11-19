@@ -299,7 +299,7 @@ public class CompanyRepBoundary {
         if (success) {
             System.out.println("Internship created.");
         } else {
-            System.out.println("Failed to create internship.");
+            System.out.println("Failed to create internship. You can post at most 5 internships.");
         }
 
         // // enter the details 
