@@ -1,13 +1,14 @@
 package control;
 
 import java.util.ArrayList;
-import java.util.Date;
+// import java.util.Date;
 
 import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
+import entity.enums.Major;
 
 public class InternshipController {
     private InternshipRepository internshipRepository;
@@ -29,12 +30,12 @@ public class InternshipController {
         internship.setInternshipStatus(InternshipStatus.REJECTED);
     }
 
-    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, String preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
-        Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, internshipStatus, companyName, compRepIC, numOfSlots);
+    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, String appOpenDate, String appCloseDate, String companyName, String compRepIC, int numOfSlots){
+        Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
         return true;
     }
 
-    public void editInternship(String internshipId, String title, String description, InternshipLevel level, String preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+    public void editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, String appOpenDate, String appCloseDate, String companyName, String compRepIC, int numOfSlots){
         internship = internshipRepository.findById(internshipId);
         internship.setInternshipTitle(title);
         internship.setDescription(description);

@@ -33,10 +33,10 @@ public class StudentBoundary {
             String choice = console.readLine("Enter choice: ");
 
             switch (choice) {
-                case "1" -> viewAvailableInternships();
+                case "1" -> displayInternships();
                 case "2" -> applyInternship(student);
-                case "3" -> viewMyApplications(student);
-                case "4" -> withdrawApplication(student);
+                case "3" -> displayAllApplications(student);
+                case "4" -> withdrawRequest(student);
                 case "5" -> {
                     System.out.println("Logging out...");
                     return;
@@ -46,7 +46,7 @@ public class StudentBoundary {
         }
     }
 
-    private void viewAvailableInternships() {
+    private void displayInternships() {
         // Need to retroactively apply filters
         List<Internship> internships = internshipController.getAvailableInternships();
 
@@ -60,7 +60,6 @@ public class StudentBoundary {
             System.out.println(internship.getId() + " | " + internship.getInternshipTitle() + " | "
                     + internship.getDescription() + " | " + internship.getCompanyName());
         }
-
     }
 
     private void applyInternship(Student student) {
@@ -75,7 +74,7 @@ public class StudentBoundary {
         }
     }
 
-    private void viewMyApplications(Student student) {
+    private void displayAllApplications(Student student) {
         List<InternshipApplication> myInternshipApplications = internshipApplicationController.studentGetInternshipApplications(student.getId());
         if (myInternshipApplications.isEmpty()) {
             System.out.println("You have not applied for any internships.");
@@ -88,7 +87,7 @@ public class StudentBoundary {
         }
     }
 
-    private void withdrawApplication(Student student) {
+    private void withdrawRequest(Student student) {
         String applicationId = console.readLine("Enter application ID to withdraw: ");
 
         boolean success = internshipApplicationController.requestWithdrawal(applicationId, student);
