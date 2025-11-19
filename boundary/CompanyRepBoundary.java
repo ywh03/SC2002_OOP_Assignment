@@ -258,27 +258,28 @@ public class CompanyRepBoundary {
 
     }
 
-    private void displayApplications(CompanyRep companyRep) {
+    private boolean displayApplications(CompanyRep companyRep) {
 
         String internshipId = console.readLine("Internship ID: ");
         List<InternshipApplication> internshipApplications = internshipController.getApplications(internshipId);
 
         if (internshipApplications == null) {
             System.out.println("Internship not found.");
-            return;
+            return false;
         }
         if (internshipApplications.isEmpty()) {
             System.out.println("There are no applications.");
-            return;
+            return false;
         }
         System.out.println("\n=== Applications ===");
         for (InternshipApplication internshipApplication: internshipApplications) {
             System.out.println(internshipApplication.getId() + " | Student: " + internshipApplication.getStudent().getId() + " | Status: " + internshipApplication.getApplicationStatus());
         }
+        return true;
     }
 
     private void processApplication(CompanyRep companyRep) {
-        displayApplications(companyRep);
+        if (!displayApplications(companyRep)) return;
         
         String internshipApplicationId = console.readLine("Internship Application ID: ");
         String choice = console.readLine("Accept or Reject (A/R)").toUpperCase();
