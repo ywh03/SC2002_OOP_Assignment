@@ -33,10 +33,10 @@ public class StudentBoundary {
             String choice = console.readLine("Enter choice: ");
 
             switch (choice) {
-                case "1" -> handleViewAvailableInternships();
-                case "2" -> handleApply(student);
-                case "3" -> handleMyApplications(student);
-                case "4" -> handleWithdraw(student);
+                case "1" -> viewAvailableInternships();
+                case "2" -> applyInternship(student);
+                case "3" -> viewMyApplications(student);
+                case "4" -> withdrawApplication(student);
                 case "5" -> {
                     System.out.println("Logging out...");
                     return;
@@ -76,7 +76,7 @@ public class StudentBoundary {
     }
 
     private void viewMyApplications(Student student) {
-        List<InternshipApplication> myInternshipApplications = internshipApplicationController.getApplicationsByStudent(student);
+        List<InternshipApplication> myInternshipApplications = internshipApplicationController.studentGetInternshipApplications(student.getId());
         if (myInternshipApplications.isEmpty()) {
             System.out.println("You have not applied for any internships.");
             return;
@@ -84,14 +84,14 @@ public class StudentBoundary {
         System.out.println("\n=== My Applications ===");
         for (InternshipApplication internshipApplication : myInternshipApplications) {
             System.out.println(internshipApplication.getId() + " | Internship: " + internshipApplication.getInternship().getInternshipTitle()
-                    + " | Company: " + internshipApplication.getInternship().getCompanyName()) + " | Status: " + internshipApplication.getApplicationStatus());
+                    + " | Company: " + internshipApplication.getInternship().getCompanyName() + " | Status: " + internshipApplication.getApplicationStatus());
         }
     }
 
     private void withdrawApplication(Student student) {
         String applicationId = console.readLine("Enter application ID to withdraw: ");
 
-        boolean success = internshipApplicationController.withdraw(applicationId, student);
+        boolean success = internshipApplicationController.requestWithdrawal(applicationId, student);
 
         if (success) {
             System.out.println("Withdrawal request submitted");

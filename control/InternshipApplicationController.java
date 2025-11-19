@@ -11,6 +11,7 @@ import entity.enums.InternshipStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class InternshipApplicationController{
@@ -75,13 +76,22 @@ public class InternshipApplicationController{
     }
 
     // student applies for an internship
-    public boolean apply(Internship internship, Student student) {
+    public boolean apply(String internshipId, Student student) {
+
+        Internship internship = internshipRepository.findById(internshipId);
+
+        if (internship == null) return false;
+
         // if they already applied, do not accept
-        boolean alreadyApplied = internshipApplicationRepository.findAll().stream().anyMatch(a -> a.getInternship() == internship && a.getStudent() == student);
-            if (alreadyApplied) {
-                System.out.println(student.getFullName() + " has already applied for " + internship.getInternshipTitle());
-                return false;
-            }
+        boolean alreadyApplied = internshipApplicationRepository.findAll().stream()
+                .anyMatch(a -> a.getInternship()
+                .getId()
+                .equals(internshipId) && a.getStudent() == student);
+
+        if (alreadyApplied) {
+            System.out.println(student.getFullName() + " has already applied for " + internship.getInternshipTitle());
+            return false;
+        }
         
         if (!canApply(student)) {
             System.out.println("You cannot apply for any more internships.");
@@ -126,8 +136,12 @@ public class InternshipApplicationController{
     }
 
     // student requests withdrawal
-    public boolean requestWithdrawal(String internshipAppId) {
+    public boolean requestWithdrawal(String internshipAppId, Student student) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp == null) return false;
+
+        if (!intApp.getStudent().getId().equals(student.getId())) return false;
+
         if (intApp.getApplicationStatus() == ApplicationStatus.PENDING) {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
@@ -212,15 +226,23 @@ public class InternshipApplicationController{
         return true;
     }
 
-    public ArrayList<InternshipApplication> getInternshipApplications(String internshipId) {
-    ArrayList<InternshipApplication> internshipApplications = new ArrayList<>();
+    public ArrayList<InternshipApplication> companyRepGetInternshipApplications(String internshipId) {
 
-    for (InternshipApplication intApp : internshipApplicationRepository.findAll()) {
-        if (intApp.getInternship().getId().equals(internshipId)) {
-            internshipApplications.add(intApp);
-        }
+        List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
+                .filter(internshipApplication -> internshipApplication.getInternship().getId().equals(internshipId))
+                .toList();
+
+        return new ArrayList<>(result);
+
     }
 
-    return internshipApplications;
+    public ArrayList<InternshipApplication> studentGetInternshipApplications(String userId) {
+
+        List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
+                .filter(internshipApplication -> internshipApplication.getStudent().equals(userId))
+                .toList();
+
+        return new ArrayList<>(result);
+
     }
 }
