@@ -65,18 +65,12 @@ public class InternshipApplicationController{
         }
     }
 
-    // student withdraws their application
-    public boolean withdraw(InternshipApplication intApp) {
-        if (!intApp.getOfferAccepted()) {
-            internshipApplicationRepository.delete(intApp);
-            Internship internship = intApp.getInternship();
-            internship.getInternshipApplications().remove(intApp);
-            internshipRepository.save(internship);
-            System.out.println(intApp.getStudent().getFullName() + " has withdrawn the application.");
-            return true;
-        } else {
-            System.out.println("Cannot withdraw this application (application has already been accepted or not found).");
-            return false;
+    // student rejects the offer
+    public void rejectOffer(String internshipAppId) {
+    InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp != null && intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL) {
+            intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
+            internshipApplicationRepository.save(intApp);
         }
     }
 
@@ -110,40 +104,58 @@ public class InternshipApplicationController{
     }
 
     // means application status is successful -> give offer
-    public void approveInternshipApplication(InternshipApplication intApp) {
-        if (internshipApplicationRepository.findAll().contains(intApp)) {
+    public void approveInternshipApplication(String internshipAppId) {
+        InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
-            System.out.println("Application approved for " + intApp.getStudent().getFullName());
-        } else {
-            System.out.println("Application not found.");
+            internshipApplicationRepository.save(intApp);
+        // } else {
+        //     // System.out.println("Application not found.");
         }
     }
 
     // company rejects application -> unsuccessful
-    public void rejectInternshipApplication(InternshipApplication intApp) {
-        if (internshipApplicationRepository.findAll().contains(intApp)) {
+    public void rejectInternshipApplication(String internshipAppId) {
+        InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
-            System.out.println("Application rejected for " + intApp.getStudent().getFullName());
-        } else {
-            System.out.println("Application not found.");
+            internshipApplicationRepository.save(intApp);
+        // } else {
+        //     // System.out.println("Application not found.");
         }
     }
 
-    public void approveAppWithdrawal(InternshipApplication intApp) {
-        if (internshipApplicationRepository.findAll().contains(intApp)) {
-            internshipApplicationRepository.delete(intApp);
+    // student requests withdrawal
+    public boolean requestWithdrawal(String internshipAppId) {
+        InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp.getApplicationStatus() == ApplicationStatus.PENDING) {
+            intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
+            internshipApplicationRepository.save(intApp);
+            return true;
+        }
+        // System.out.println("Cannot request withdrawal for this application.");
+        return false;
+    }
+
+    public void approveAppWithdrawal(String internshipAppId) {
+        InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp != null  && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
+            intApp.setApplicationStatus(ApplicationStatus.WITHDRAWN);
+            internshipApplicationRepository.save(intApp);
             intApp.getInternship().getInternshipApplications().remove(intApp);
-            System.out.println("Withdrawal approved for " + intApp.getStudent().getFullName());
-        } else {
-            System.out.println("Application not found.");
+            internshipRepository.save(intApp.getInternship());
+        // } else {
+        //     System.out.println("Application not found.");
         }
     }
 
-    public void rejectAppWithdrawal(InternshipApplication app) {
-        if (internshipApplicationRepository.findAll().contains(app)) {
-            System.out.println("Withdrawal rejected for " + app.getStudent().getFullName() + ". Application remains " + app.getApplicationStatus());
-        } else {
-            System.out.println("Application not found.");
+    public void rejectAppWithdrawal(String internshipAppId) {
+        InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
+        if (intApp != null && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
+            intApp.setApplicationStatus(ApplicationStatus.PENDING);
+            internshipApplicationRepository.save(intApp);
+        // } else {
+        //     System.out.println("Application not found.");
         }
     }
 

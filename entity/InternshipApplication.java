@@ -10,7 +10,6 @@ public class InternshipApplication implements Serializable, Identifiable {
     private ApplicationStatus applicationStatus; // successful, pending, rejected
     private boolean offerAccepted; 
     private Student student;
-    private ApplicationStatus preWithdrawalStatus;
 
     public InternshipApplication(String internshipApplicationId, Internship internship, Student student) {
         this.internshipApplicationId = internshipApplicationId;
@@ -18,7 +17,6 @@ public class InternshipApplication implements Serializable, Identifiable {
         this.student = student;
         this.applicationStatus = ApplicationStatus.PENDING; //default is set to pending
         this.offerAccepted = false; // default is false first
-        this.preWithdrawalStatus = null;
     }
 
     @Override
@@ -34,14 +32,5 @@ public class InternshipApplication implements Serializable, Identifiable {
     public void setOfferAccepted(boolean offerAccepted) {this.offerAccepted = offerAccepted;}
     public Student getStudent() {return student;}
     public void setStudent(Student student) {this.student = student;}
-    public ApplicationStatus getPreWithdrawalStatus() {return preWithdrawalStatus;}
-    public void setPreWithdrawalStatus(ApplicationStatus preWithdrawalStatus) {this.preWithdrawalStatus = preWithdrawalStatus}
-
-    public void requestWithdrawal() {
-    if (applicationStatus == ApplicationStatus.PENDING) { 
-        preWithdrawalStatus = applicationStatus;          
-        applicationStatus = ApplicationStatus.PENDING_WITHDRAWAL; 
-    }
-}
 
 }
