@@ -9,6 +9,8 @@ import util.ConsoleUtil;
 
 import java.util.List;
 
+import Manager.NotificationManager;
+
 public class StudentBoundary {
 
     private final InternshipController internshipController;
@@ -28,7 +30,8 @@ public class StudentBoundary {
             System.out.println("2. Apply for Internship");
             System.out.println("3. View My Applications");
             System.out.println("4. Withdraw Application");
-            System.out.println("5. Logout");
+            System.out.println("5. View Notifications");
+            System.out.println("6. Logout");
 
             String choice = console.readLine("Enter choice: ");
 
@@ -37,7 +40,8 @@ public class StudentBoundary {
                 case "2" -> applyInternship(student);
                 case "3" -> displayAllApplications(student);
                 case "4" -> withdrawRequest(student);
-                case "5" -> {
+                case "5" -> displayNotifications(student);
+                case "6" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -102,5 +106,25 @@ public class StudentBoundary {
             System.out.println("Could not withdraw. Check eligibility or ID");
         }
     }
+
+    private void displayNotifications(Student student) {
+        List<Notification> notifs = NotificationManager.getInstance().getNotifications(student.getUserId());
+
+        if (notifs.isEmpty()) {
+            System.out.println("No notifications.");
+            return;
+        }
+
+        System.out.println("=== Notifications ===");
+        for (Notification n : notifs) {
+            // example: mark read/unread and message
+            System.out.println((n.isRead() ? "[READ] " : "[UNREAD] ") + n.getMessage()
+                    + " | " + n.getTimestamp());
+        }
+
+        // Optional: mark all as read once displayed
+        NotificationManager.getInstance().markAllAsRead(student.getUserId());
+    }
+
 
 }
