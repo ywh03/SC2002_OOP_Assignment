@@ -215,12 +215,17 @@ public class InternshipApplicationController {
         }
 
         // case 1: student has already accepted an offer
-        boolean hasAcceptedOffer = student.getAppliedInternships().stream().anyMatch(a -> a.getOfferAccepted());
+        boolean hasAcceptedOffer = internshipApplicationRepository.findAll().stream()
+                .filter(a -> a.getStudent().getId().equals(studentId))
+                .anyMatch(InternshipApplication::getOfferAccepted);
         if (hasAcceptedOffer) {
             return false;
         }
         // case 2: student's current applications = 3 already (not incl of unsuccessful ones)
-        long currentIntAppCount = student.getAppliedInternships().stream().filter(a -> a.getApplicationStatus() != ApplicationStatus.UNSUCCESSFUL).count();
+        long currentIntAppCount = internshipApplicationRepository.findAll().stream()
+                .filter(a -> a.getStudent().getId().equals(studentId))
+                .filter(a -> a.getApplicationStatus() != ApplicationStatus.UNSUCCESSFUL)
+                .count();
         return currentIntAppCount < 3; // allow up to 3 active applications
     }
 
