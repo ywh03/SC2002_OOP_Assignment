@@ -5,26 +5,45 @@ import entity.Internship;
 import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
 import repository.InternshipRepository;
+import repository.UserRepository;
 import entity.Student;
 import entity.User;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
-import repository.UserRepository;
+import manager.NotificationManager;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InternshipApplicationController{
+public class InternshipApplicationController {
+
     private InternshipApplicationRepository internshipApplicationRepository;
     private InternshipRepository internshipRepository;
     private UserRepository userRepository;
+    private NotificationManager notificationManager;
 
-    public InternshipApplicationController() { 
-        internshipApplicationRepository = new InternshipApplicationRepository();
-        internshipRepository = new InternshipRepository();
+    private String careerCenterStaffId;
+
+    public InternshipApplicationController() { // empty constructor, dont create a new repo lol
+    }
+
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    public void setInternshipApplicationRepository(InternshipApplicationRepository repo) {
+        this.internshipApplicationRepository = repo;
+    }
+    public void setInternshipRepository(InternshipRepository repo) {
+        this.internshipRepository = repo;
+    }
+    public void setNotificationManager(NotificationManager manager) {
+        this.notificationManager = manager;
+    }
+    public void setCareerCenterStaffId(String id) {
+        this.careerCenterStaffId = id;
     }
 
     public void printApplication() {
@@ -80,10 +99,12 @@ public class InternshipApplicationController{
     }
 
     // student applies for an internship
-    public boolean apply(String internshipId, Student student) {
+    public boolean apply(String internshipId, String studentId) {
 
         Internship internship = internshipRepository.findById(internshipId);
+        User user = userRepository.findById(studentId);
 
+        if (!(user instanceof Student student)) return false;
         if (internship == null) return false;
 
         // if they already applied, do not accept
@@ -97,12 +118,12 @@ public class InternshipApplicationController{
             return false;
         }
         
-        if (!canApply(student)) {
+        if (!canApply(studentId)) {
             System.out.println("You cannot apply for any more internships.");
             return false;
         }
 
-        if (!isEligible(student, internship)) {
+        if (!isEligible(studentId, internshipId)) {
             System.out.println("You are not eligible to apply for this internship.");
             return false;
         }
@@ -127,7 +148,7 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was approved.");
+            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
 
             return true;
         }
@@ -141,7 +162,7 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was rejected.");
+            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
 
             return true;
         }
@@ -159,8 +180,9 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + application.getInternship().getInternshipTitle() + "\".");
-
+            if (careerCenterStaffId != null) {
+                notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
+            }
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
@@ -199,10 +221,6 @@ public class InternshipApplicationController{
             return false; // not a student or doesn't exist
         }
 
-        // case 0: student don't exist:
-        if (student == null) {
-            return false;
-        }
         // case 1: student has already accepted an offer
         boolean hasAcceptedOffer = student.getAppliedInternships().stream().anyMatch(a -> a.getOfferAccepted());
         if (hasAcceptedOffer) {
