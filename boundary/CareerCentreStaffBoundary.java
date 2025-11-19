@@ -186,7 +186,7 @@ public class CareerCentreStaffBoundary {
         }
     }
 
-    public ArrayList<String> getFilters(){
+    public ArrayList<ArrayList<String>> getFilters(){
         ArrayList<ArrayList<String>> filters = new ArrayList<>();
         filters.add(new ArrayList<>());
         filters.add(new ArrayList<>());
