@@ -5,7 +5,7 @@ import repository.UserRepository;
 
 import java.util.ArrayList;
 
-import Manager.NotificationManager;
+import manager.NotificationManager;
 
 public class CompanyRepController {
     private final UserRepository userRepository;
