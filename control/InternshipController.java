@@ -35,7 +35,7 @@ public class InternshipController {
         Internship internship = this.internshipRepository.findById(internshipId);
         if (internship == null) return false;
 
-        if (!internship.getCompRepIC().equals(companyRep)) return false;
+        if (!internship.getCompRepIC().getId().equals(companyRep.getId())) return false;
 
         internship.setVisibility(!internship.getVisibility());
         internshipRepository.save(internship);
