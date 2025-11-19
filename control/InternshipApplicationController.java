@@ -52,18 +52,6 @@ public class InternshipApplicationController {
         this.careerCenterStaffId = id;
     }
 
-    public void printApplication() {
-        if (internshipApplicationRepository.findAll().isEmpty()) {
-            System.out.println("No applications were submitted.");
-            return;
-        }
-
-        for (InternshipApplication intApp : internshipApplicationRepository.findAll()) {
-            System.out.println("Internship: " + intApp.getInternship().getInternshipTitle() + ", Student: " + intApp.getStudent().getFullName()
-                                + ", Status: " + intApp.getApplicationStatus() + ", Offer Accepted: " + intApp.getOfferAccepted());
-        }
-    }
-
     // student accepts the offer
     public boolean acceptOffer(InternshipApplication intApp) { 
         if (intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL && !intApp.getOfferAccepted()) {
@@ -118,17 +106,15 @@ public class InternshipApplicationController {
                 && a.getStudent().getId().equals(studentId));
 
         if (alreadyApplied) {
-            System.out.println(student.getFullName() + " has already applied for " + internship.getInternshipTitle());
+
             return false;
         }
         
         if (!canApply(studentId)) {
-            System.out.println("You cannot apply for any more internships.");
             return false;
         }
 
         if (!isEligible(studentId, internshipId)) {
-            System.out.println("You are not eligible to apply for this internship.");
             return false;
         }
 
