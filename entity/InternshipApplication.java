@@ -2,9 +2,14 @@ package entity;
 
 import entity.enums.ApplicationStatus;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class InternshipApplication implements Serializable, Identifiable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String internshipApplicationId;
     private Internship internship;
     private ApplicationStatus applicationStatus; // successful, pending, rejected
@@ -15,8 +20,8 @@ public class InternshipApplication implements Serializable, Identifiable {
         this.internshipApplicationId = internshipApplicationId;
         this.internship = internship;
         this.student = student;
-        this.applicationStatus = ApplicationStatus.PENDING; //default is set to pending
-        this.offerAccepted = false; // default is false first
+        this.applicationStatus = ApplicationStatus.PENDING;
+        this.offerAccepted = false;
     }
 
     @Override

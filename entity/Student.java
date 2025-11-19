@@ -8,6 +8,7 @@ import entity.Notification;
 import entity.enums.Major;
 
 public class Student extends User {
+
     private int yearOfStudy;
     private Major major;
     private ArrayList<InternshipApplication> appliedInternships = new ArrayList<>();

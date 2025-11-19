@@ -1,6 +1,7 @@
 package entity;
 import entity.enums.ApplicationStatus;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import entity.enums.InternshipLevel;
 import entity.enums.Major;
 
 public class Internship implements Serializable, Identifiable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String internshipId;
     private int numOfSlots;
     private String internshipTitle;

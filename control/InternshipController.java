@@ -142,9 +142,10 @@ public class InternshipController {
 
     // 
 
-    public ArrayList<Internship> getInternshipListings(String compRepId){
-        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
-        return companyRep.getInternshipInfo();
+    public ArrayList<Internship> getInternshipListings(String compRepId) {
+        return internshipRepository.findAll().stream()
+                .filter(internship -> internship.getCompRepIC().getId().equals(compRepId))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<InternshipApplication> getApplications(String internshipId){
@@ -161,13 +162,10 @@ public class InternshipController {
     }
 
 
-    public ArrayList<Internship> getPendingInternships(String compRepId){
-        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
-
-        List<Internship> pendingInternships = companyRep.getInternshipInfo().stream()
-                .filter(internship -> internship.getInternshipStatus() == InternshipStatus.PENDING)
-                .toList();
-
-        return new ArrayList<>(pendingInternships);
+    public ArrayList<Internship> getPendingInternships(String compRepId) {
+        return internshipRepository.findAll().stream()
+                .filter(i -> i.getCompRepIC().getId().equals(compRepId))
+                .filter(i -> i.getInternshipStatus() == InternshipStatus.PENDING)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

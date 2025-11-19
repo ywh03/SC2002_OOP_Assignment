@@ -1,8 +1,13 @@
 package entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public abstract class User implements Serializable, Identifiable, Notifiable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String userId;
     private String fullName;
     private String password;

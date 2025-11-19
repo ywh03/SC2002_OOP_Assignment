@@ -99,7 +99,19 @@ public class CompanyRepBoundary {
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName();
-        int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
+
+        int numOfSlots = 0;
+        while (numOfSlots == 0) {
+            try {
+                numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
+                if (numOfSlots <= 0 || numOfSlots > 10) {
+                    System.out.println("Number of slots must be between 1 and 10. Please try again.");
+                    numOfSlots = 0;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Input not a number. Please try again.");
+            }
+        }
         
         boolean success = internshipController.createInternship(title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
         
@@ -128,18 +140,33 @@ public class CompanyRepBoundary {
         // enter the details 
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
-        String levelInput = console.readLine("Level");
-        // convert to InternshipLevel enum
-        InternshipLevel level = InternshipLevel.valueOf(levelInput.toUpperCase()); 
-        String preferredMajorInput = console.readLine("Preferred Major: ");
-        // convert to Major enum
-        Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
+
+        InternshipLevel internshipLevel = null;
+        while (internshipLevel == null){
+            try {
+                String levelInput = console.readLine("Level (BASIC, INTERMEDIATE, ADVANCED): ");
+                internshipLevel = InternshipLevel.valueOf(levelInput.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid level. Please try again.");
+            }
+        }
+
+        Major preferredMajor = null;
+        while (preferredMajor == null){
+            try {
+                String majorInput = console.readLine("Preferred Major: ");
+                preferredMajor = Major.valueOf(majorInput.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid major. Please try again.");
+            }
+        }
+
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName();
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
-        boolean success = internshipController.editInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
+        boolean success = internshipController.editInternship(internshipId,title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
         
         if (success) {
             System.out.println("Internship created.");
@@ -152,15 +179,27 @@ public class CompanyRepBoundary {
         List<Internship> internships = internshipController.getInternshipListings(companyRep.getId());
 
         if (internships.isEmpty()) {
-            System.out.println("You have no Internship postings.");
+            System.out.println("You have no internship postings.");
             return;
         }
 
         System.out.println("\n=== My Internship Postings ===");
-        for (Internship internship : internships) {
-            System.out.println(internship.getId() + " | " + internship.getInternshipTitle() + " | Visible: " + internship.getVisibility());
+
+        System.out.printf("%-8s | %-30s | %-10s | %-15s | %-10s | %s\n",
+                "ID", "Title", "Visible", "Status", "Slots", "Major");
+        System.out.println("-----------------------------------------------------------------------------------------------");
+
+        for (Internship i : internships) {
+            System.out.printf("%-8s | %-30s | %-10s | %-15s | %-10d | %s\n",
+                    i.getId(),
+                    i.getInternshipTitle(),
+                    i.getVisibility() ? "YES" : "NO",
+                    i.getInternshipStatus(),
+                    i.getNumOfSlots(),
+                    i.getPreferredMajor());
         }
 
+        System.out.println("-----------------------------------------------------------------------------------------------");
     }
 
     private void toggleVisibility(CompanyRep companyRep) {
