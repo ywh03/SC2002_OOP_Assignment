@@ -8,7 +8,7 @@ public class InternshipRepository extends Repository<Internship> {
     private int nextId;
 
     public InternshipRepository() {
-        super("../data/internships.ser");
+        super("data/internships.ser");
         nextId = computeMaxNumericId(PREFIX) + 1;
     }
 

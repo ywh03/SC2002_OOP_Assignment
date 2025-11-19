@@ -5,11 +5,10 @@ import java.util.List;
 
 import entity.Notification;
 
-public class CompanyRep extends User implements Notifiable{
+public class CompanyRep extends User {
     private boolean approved = false;
     private int numOfInternships = 0;
     private String companyName;
-    private ArrayList<Internship> internshipInfo = new ArrayList<>();
     private String department;
     private String position;
     private boolean registered = false;
@@ -42,7 +41,6 @@ public class CompanyRep extends User implements Notifiable{
     public void setNumOfInternships(int numOfInternships){this.numOfInternships = numOfInternships;}
     public String getCompanyName(){return this.companyName;}
     public void setCompanyName(String companyName){this.companyName = companyName;}
-    public ArrayList<Internship> getInternshipInfo(){return this.internshipInfo;}
     public String getDepartment(){return this.department;}
     public void setDepartment(String department){this.department = department;}
     public String getPosition(){return this.position;}
@@ -50,9 +48,5 @@ public class CompanyRep extends User implements Notifiable{
 
     public void register(){
         this.registered = true;
-    }
-
-    public void addInternship(Internship internship){
-        internshipInfo.add(internship);
     }
 }

@@ -59,7 +59,7 @@ public class StudentBoundary {
         List<Internship> internships = internshipController.getAvailableInternships(student);
 
         if (internships.isEmpty()) {
-            System.out.println("There are not available internships.");
+            System.out.println("There are no available internships.");
             return;
         }
 
@@ -84,21 +84,22 @@ public class StudentBoundary {
         }
     }
 
-    private void displayAllApplications(Student student) {
+    private boolean displayAllApplications(Student student) {
         List<InternshipApplication> myInternshipApplications = internshipApplicationController.studentGetInternshipApplications(student.getId());
         if (myInternshipApplications.isEmpty()) {
             System.out.println("You have not applied for any internships.");
-            return;
+            return false;
         }
         System.out.println("\n=== My Applications ===");
         for (InternshipApplication internshipApplication : myInternshipApplications) {
             System.out.println(internshipApplication.getId() + " | Internship: " + internshipApplication.getInternship().getInternshipTitle()
                     + " | Company: " + internshipApplication.getInternship().getCompanyName() + " | Status: " + internshipApplication.getApplicationStatus());
         }
+        return true;
     }
 
     private void withdrawRequest(Student student) {
-        displayAllApplications(student);
+        if (!displayAllApplications(student)) return;
         
         String applicationId = console.readLine("Enter application ID to withdraw: ");
 

@@ -35,7 +35,7 @@ public class InternshipController {
         Internship internship = this.internshipRepository.findById(internshipId);
         if (internship == null) return false;
 
-        if (!internship.getCompRepIC().equals(companyRep)) return false;
+        if (!internship.getCompRepIC().getId().equals(companyRep.getId())) return false;
 
         internship.setVisibility(!internship.getVisibility());
         internshipRepository.save(internship);
@@ -56,7 +56,7 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.APPROVED);
-
+        internshipRepository.save(internship);
         notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was approved.");
 
         return true;
@@ -67,13 +67,14 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.REJECTED);
-
+        internshipRepository.save(internship);
         notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was rejected.");
 
         return true;
     }
 
-    public boolean createInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+    public boolean createInternship(String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+        String internshipId = internshipRepository.generateNextId();
         Internship internship = new Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);
         internshipRepository.save(internship);
         return true;
@@ -91,6 +92,7 @@ public class InternshipController {
         internship.setCompRepIC(compRepIC);
         internship.setNumOfSlots(numOfSlots);
 
+        internshipRepository.save(internship);
         return true;
     }
 
@@ -134,15 +136,20 @@ public class InternshipController {
                     return true;
                 }
             })
-            .collect(Collectors.toList()); 
+            .toList();
         return new ArrayList<>(availableInternships);
     }
 
     // 
 
-    public ArrayList<Internship> getInternshipListings(String compRepId){
-        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
-        return companyRep.getInternshipInfo();
+    public ArrayList<Internship> getInternshipListings(String compRepId) {
+        return internshipRepository.findAll().stream()
+                .filter(internship -> internship.getCompRepIC().getId().equals(compRepId))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public Internship getInternshipById(String id) {
+        return internshipRepository.findById(id);
     }
 
     public ArrayList<InternshipApplication> getApplications(String internshipId){
@@ -159,13 +166,10 @@ public class InternshipController {
     }
 
 
-    public ArrayList<Internship> getPendingInternships(String compRepId){
-        CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
-
-        List<Internship> pendingInternships = companyRep.getInternshipInfo().stream()
-                .filter(internship -> internship.getInternshipStatus() == InternshipStatus.PENDING)
-                .toList();
-
-        return new ArrayList<>(pendingInternships);
+    public ArrayList<Internship> getPendingInternships(String compRepId) {
+        return internshipRepository.findAll().stream()
+                .filter(i -> i.getCompRepIC().getId().equals(compRepId))
+                .filter(i -> i.getInternshipStatus() == InternshipStatus.PENDING)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

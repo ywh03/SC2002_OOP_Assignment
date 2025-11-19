@@ -1,7 +1,6 @@
 package control;
 
 import entity.InternshipApplication;
-import entity.CareerCentreStaff;
 import entity.Internship;
 import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
@@ -13,7 +12,6 @@ import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
 import manager.NotificationManager;
-import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,24 +20,36 @@ import java.util.stream.Collectors;
 
 public class InternshipApplicationController {
 
-    private final InternshipApplicationRepository internshipApplicationRepository;
-    private final InternshipRepository internshipRepository;
-    private final UserRepository userRepository;
-    private final NotificationManager notificationManager;
-    private final String careerCenterStaffId;
+    private InternshipApplicationRepository internshipApplicationRepository;
+    private InternshipRepository internshipRepository;
+    private UserRepository userRepository;
+    private NotificationManager notificationManager;
 
-    public InternshipApplicationController(
-            InternshipApplicationRepository internshipAppRepo,
-            InternshipRepository internshipRepository,
-            UserRepository userRepository,
-            NotificationManager notificationManager,
-            String careerCenterStaffId
-    ) {
-        this.internshipApplicationRepository = internshipAppRepo;
+    private String careerCenterStaffId;
+
+    public InternshipApplicationController(InternshipApplicationRepository internshipApplicationRepository, InternshipRepository internshipRepository, UserRepository userRepository) { // empty constructor, dont create a new repo lol
+
+        this.internshipApplicationRepository = internshipApplicationRepository;
         this.internshipRepository = internshipRepository;
         this.userRepository = userRepository;
-        this.notificationManager = notificationManager;
-        this.careerCenterStaffId = careerCenterStaffId;
+        this.notificationManager = new NotificationManager();
+
+    }
+
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    public void setInternshipApplicationRepository(InternshipApplicationRepository repo) {
+        this.internshipApplicationRepository = repo;
+    }
+    public void setInternshipRepository(InternshipRepository repo) {
+        this.internshipRepository = repo;
+    }
+    public void setNotificationManager(NotificationManager manager) {
+        this.notificationManager = manager;
+    }
+    public void setCareerCenterStaffId(String id) {
+        this.careerCenterStaffId = id;
     }
 
     public void printApplication() {
@@ -132,7 +142,7 @@ public class InternshipApplicationController {
         internshipRepository.save(internship);
         System.out.println(student.getFullName() + " applied for " + internship.getInternshipTitle());
 
-        NotificationManager.getInstance().sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
+        notificationManager.sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
 
         return true;
     }
@@ -144,7 +154,7 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
+            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
 
             return true;
         }
@@ -158,7 +168,7 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
+            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
 
             return true;
         }
@@ -176,15 +186,9 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
-            List<CareerCentreStaff> allStaff = userRepository.findAll().stream()
-                                            .filter(user -> user instanceof CareerCentreStaff) // only CareerCentreStaff
-                                            .map(user -> (CareerCentreStaff) user)            // cast to CareerCentreStaff
-                                            .toList();;
-            for (CareerCentreStaff staff : allStaff) {
-                NotificationManager.getInstance().sendNotification(staff.getId(), "A withdrawal request has been submitted for internship \"" 
-                        + intApp.getInternship().getInternshipTitle() + "\".");
+            if (careerCenterStaffId != null) {
+                notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
             }
-
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
