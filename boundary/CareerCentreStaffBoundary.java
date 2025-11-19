@@ -49,8 +49,9 @@ public class CareerCentreStaffBoundary {
             switch (choice) {
                 case "1" -> displayPendingRegistrations(careerCentreStaff);
                 case "2" -> displayPendingInternships(careerCentreStaff);
-                case "3" -> displayReport();
-                case "4" -> {
+                case "3" -> displayPendingWithdrawals(careerCentreStaff);
+                case "4" -> displayReport();
+                case "5" -> {
                     System.out.println("Logging out...");
                     return;
                 }

@@ -132,6 +132,15 @@ public class InternshipController {
         return internship.getInternshipApplications();
     }
 
+    public ArrayList<Internship> getPendingInternships() {
+        List<Internship> internships = internshipRepository.findAll();    
+        List<Internship> pendingInternships = internships.stream()        
+            .filter(internship -> internship.getInternshipStatus() == InternshipStatus.PENDING)            
+            .toList();    
+        return new ArrayList<>(pendingInternships);
+    }
+
+
     public ArrayList<Internship> getPendingInternships(String compRepId){
         CompanyRep companyRep = (CompanyRep) this.userRepository.findById(compRepId);
 
