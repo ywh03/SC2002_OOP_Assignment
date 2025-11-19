@@ -1,12 +1,8 @@
 package control;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-// import java.util.Date;
-=======
 import java.util.Date;
 import java.util.HashSet;
->>>>>>> 5ecdb3a8c3970eb292913008a00b7798fbcbf876
 
 import entity.CompanyRep;
 import entity.Internship;
@@ -40,7 +36,7 @@ public class InternshipController {
         return true;
     }
 
-    public void editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, String appOpenDate, String appCloseDate, String companyName, String compRepIC, int numOfSlots){
+    public boolean editInternship(String internshipId, String title, String description, InternshipLevel level, Major preferredMajor, String appOpenDate, String appCloseDate, String companyName, String compRepIC, int numOfSlots){
         internship = internshipRepository.findById(internshipId);
         internship.setInternshipTitle(title);
         internship.setDescription(description);
@@ -51,6 +47,7 @@ public class InternshipController {
         internship.setCompanyName(companyName);
         internship.setCompRepIC(compRepIC);
         internship.setNumOfSlots(numOfSlots);
+        return true;
     }
 
     public HashSet<Internship> generateReport(ArrayList<ArrayList<String>> filters){
