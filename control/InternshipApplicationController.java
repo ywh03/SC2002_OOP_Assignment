@@ -225,7 +225,10 @@ public class InternshipApplicationController {
         // case 2: student's current applications = 3 already (not incl of unsuccessful ones)
         long currentIntAppCount = internshipApplicationRepository.findAll().stream()
                 .filter(a -> a.getStudent().getId().equals(studentId))
-                .filter(a -> a.getApplicationStatus() != ApplicationStatus.UNSUCCESSFUL)
+                .filter(a -> switch (a.getApplicationStatus()) {
+                    case PENDING, PENDING_WITHDRAWAL, SUCCESSFUL -> !a.getOfferAccepted();
+                    default -> false; // UNSUCCESSFUL and WITHDRAWN are not active
+                })
                 .count();
         return currentIntAppCount < 3; // allow up to 3 active applications
     }
