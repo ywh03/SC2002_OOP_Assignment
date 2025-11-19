@@ -34,9 +34,9 @@ public class MainApp {
         internshipApplicationRepository = new InternshipApplicationRepository();
 
         authController = new AuthController(userRepository);
-        internshipController = new InternshipController(internshipRepository);
+        internshipController = new InternshipController(internshipRepository, userRepository);
         internshipApplicationController = new InternshipApplicationController(internshipApplicationRepository, internshipRepository);
-        companyRepController = new CompanyRepController()(userRepository, internshipRepository);
+        companyRepController = new CompanyRepController(userRepository, internshipRepository);
 
         loginBoundary = new LoginBoundary(authController);
         studentBoundary = new StudentBoundary(internshipController, internshipApplicationController);
