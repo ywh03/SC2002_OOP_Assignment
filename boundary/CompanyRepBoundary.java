@@ -81,7 +81,7 @@ public class CompanyRepBoundary {
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
-        String compRepIC = companyRep.getFullName(); 
+        CompanyRep compRepIC = companyRep;
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
         
@@ -120,7 +120,7 @@ public class CompanyRepBoundary {
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
-        String compRepIC = companyRep.getFullName(); 
+        CompanyRep compRepIC = companyRep;
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
         boolean success = internshipController.editInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
