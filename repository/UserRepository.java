@@ -19,7 +19,7 @@ public class UserRepository extends Repository<User> {
      * Entities are loaded upon instantiation.
      */
     public UserRepository() {
-        super("./SC2002_OOP_Assignment/data/users.ser");
+        super("./data/users.ser");
     }
 
 

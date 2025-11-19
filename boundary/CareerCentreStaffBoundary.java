@@ -145,6 +145,7 @@ public class CareerCentreStaffBoundary {
 
         if (pendingInternships.isEmpty()) {
             System.out.println("No pending internships.");
+            return;
         }
 
         System.out.println("\n=== Pending internships ===");
