@@ -13,7 +13,7 @@ import util.ConsoleUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CareerCentreStaffBoundary () {
+public class CareerCentreStaffBoundary {
 
     private InternshipController internshipController;
     private CompanyRepController companyRepController;
@@ -180,7 +180,7 @@ public class CareerCentreStaffBoundary () {
 
     public void displayReport(){
         ArrayList<ArrayList<String>> filters = this.getFilters();
-        ArrayList<Internship> report = InternshipController.generaterReport(filters);
+        HashSet<Internship> report = InternshipController.generaterReport(filters);
         for (Internship internship : report){
             internship.displayInternship();
         }

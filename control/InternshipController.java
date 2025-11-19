@@ -2,6 +2,7 @@ package control;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import entity.CompanyRep;
 import entity.Internship;
@@ -47,12 +48,25 @@ public class InternshipController {
         internship.setNumOfSlots(numOfSlots);
     }
 
-    public ArrayList<Internship> generateReport(ArrayList<String> filter){
+    public HashSet<Internship> generateReport(ArrayList<ArrayList<String>> filters){
+        HashSet<Internship> filteredInternships = new HashSet<>();
+        ArrayList<Internship> internships = this.internshipRepository.findAll();
 
-    }
+        for (Internship internship : internships) {
+            boolean matchesMajor = filters.get(0).isEmpty() ||
+                    filters.get(0).stream().anyMatch(f -> new MajorFilter(f).matches(internship));
 
-    public ArrayList<Internship> getAvailableInternships(String filter){
+            boolean matchesLevel = filters.get(1).isEmpty() ||
+                    filters.get(1).stream().anyMatch(f -> new LevelFilter(f).matches(internship));
 
+            boolean matchesStatus = filters.get(2).isEmpty() ||
+                    filters.get(2).stream().anyMatch(f -> new StatusFilter(f).matches(internship));
+
+            if (matchesMajor && matchesLevel && matchesStatus) {
+                filteredInternships.add(internship);
+            }
+        }
+        return filteredInternships;
     }
 
     public ArrayList<Internship> getInternshipListings(String compRepId){
