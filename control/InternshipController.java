@@ -68,7 +68,7 @@ public class InternshipController {
         if (!internship.getVisibility()) {
             for (InternshipApplication app : internship.getInternshipApplications()) {
                 notificationManager.sendNotification(app.getStudent().getId(),
-                    "The internship \"" + internship.getInternshipTitle() + "\" is no longer visible."
+                    "The internship \"" + internship.getInternshipTitle() + "\" (" + internship.getId() + ") " + " is no longer visible."
                 );
             }
         }
