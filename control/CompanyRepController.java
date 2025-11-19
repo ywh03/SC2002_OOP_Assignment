@@ -1,46 +1,34 @@
 package control;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-import repository.UserRepository;
 import entity.CompanyRep;
-import entity.User;
+import repository.UserRepository;
+
+import java.util.ArrayList;
 
 public class CompanyRepController {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public CompanyRepController(UserRepository userRepo){
         this.userRepository = userRepo;
     }
 
     public void authoriseCompanyRep(String companyRepId){
-        User user = userRepository.findById(companyRepId);
-        if (user instanceof CompanyRep companyRep) {
-            companyRep.setApproved(true);
-            userRepository.save(companyRep);
-        }
+        CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
+        companyRep.setApproved(true);
     }
 
     public void rejectCompanyRep(String companyRepId){
-        User user = userRepository.findById(companyRepId);
-        if (user instanceof CompanyRep companyRep) {
-            companyRep.setApproved(false);
-            userRepository.save(companyRep);
-        }
+        CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
+        companyRep.setApproved(false);
     }
 
     public ArrayList<CompanyRep> approvedCompanyReps(){
-        return userRepository.findAll().stream()
-            .filter(user -> user instanceof CompanyRep compRep && compRep.getApproved())
-            .map(user -> (CompanyRep) user) //cast to comprep
-            .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
+        return new ArrayList<>(companyReps.stream().filter(CompanyRep::getApproved).toList());
     }
 
     public ArrayList<CompanyRep> getPendingRegistrations(){
-        return userRepository.findAll().stream()
-            .filter(user -> user instanceof CompanyRep compRep && !compRep.getApproved()) 
-            .map(user -> (CompanyRep) user) //cast to comprep
-            .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
+        return new ArrayList<>(companyReps.stream().filter(c -> !c.getApproved()).toList());
     }
 }

@@ -15,10 +15,10 @@ import java.util.List;
 
 public class CareerCentreStaffBoundary {
 
-    private InternshipController internshipController;
-    private CompanyRepController companyRepController;
-    private InternshipApplicationController internshipApplicationController;
-    private ConsoleUtil console;
+    private final InternshipController internshipController;
+    private final CompanyRepController companyRepController;
+    private final InternshipApplicationController internshipApplicationController;
+    private final ConsoleUtil console;
 
     public CareerCentreStaffBoundary(InternshipController internshipController,  CompanyRepController companyRepController, InternshipApplicationController internshipApplicationController) {
         this.internshipController = internshipController;
@@ -39,8 +39,8 @@ public class CareerCentreStaffBoundary {
             String choice = console.readLine("Enter your choice: ");
 
             switch (choice) {
-                case "1" -> displayPendingRegistrations(staff);
-                case "2" -> displayPendingInternships(staff);
+                case "1" -> displayPendingRegistrations(careerCentreStaff);
+                case "2" -> displayPendingInternships(careerCentreStaff);
                 case "3" -> displayReport();
                 case "4" -> {
                     System.out.println("Logging out...");
