@@ -28,9 +28,9 @@ public class CareerCentreStaffBoundary () {
     public void displayMenu(CareerCentreStaff careerCentreStaff) {
         while (true) {
             System.out.println("\n=== Career Centre Staff Menu ===");
-            System.out.println("1. View / Approve / Reject Company Rep Registrations");
-            System.out.println("2. View / Approve / Reject Internship Postings");
-            System.out.println("3. Handle Withdrawal Requests");
+            System.out.println("1. View / Process Company Rep Registrations");
+            System.out.println("2. View / Process Internship Postings");
+            System.out.println("3. View / Process Application withdrawals");
             System.out.println("4. Generate Internship Report");
             System.out.println("5. Logout");
 
@@ -39,8 +39,9 @@ public class CareerCentreStaffBoundary () {
             switch (choice) {
                 case "1" -> displayPendingRegistrations(staff);
                 case "2" -> displayPendingInternships(staff);
-                case "3" -> displayReport();
-                case "4" -> {
+                case "3" -> displayPendingWithdrawals(staff);
+                case "4" -> displayReport(); // not implemented yet
+                case "5" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -158,6 +159,4 @@ public class CareerCentreStaffBoundary () {
             System.out.println("Failed to update Withdrawal request.");
         }
     }
-
-
 }
