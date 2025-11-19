@@ -12,14 +12,20 @@ public class CompanyRepController {
         this.userRepository = userRepo;
     }
 
-    public void authoriseCompanyRep(String companyRepId){
+    public boolean authoriseCompanyRep(String companyRepId){
         CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
+        if (companyRep == null) return false;
+
         companyRep.setApproved(true);
+        return true;
     }
 
-    public void rejectCompanyRep(String companyRepId){
+    public boolean rejectCompanyRep(String companyRepId){
         CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
+        if (companyRep == null) return false;
+
         companyRep.setApproved(false);
+        return true;
     }
 
     public ArrayList<CompanyRep> approvedCompanyReps(){
