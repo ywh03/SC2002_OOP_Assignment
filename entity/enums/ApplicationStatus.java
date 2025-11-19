@@ -4,5 +4,6 @@ public enum ApplicationStatus {
     PENDING,
     SUCCESSFUL,
     UNSUCCESSFUL,
-    WITHDRAWN
+    WITHDRAWN,
+    PENDING_WITHDRAWAL,
 }
