@@ -36,6 +36,15 @@ public class InternshipController {
 
         internship.setVisibility(!internship.getVisibility());
         internshipRepository.save(internship);
+
+        if (!internship.getVisibility()) {
+            for (InternshipApplication app : internship.getInternshipApplications()) {
+                notificationManager.sendNotification(app.getStudent().getId(),
+                    "The internship \"" + internship.getInternshipTitle() + "\" is no longer visible."
+                );
+            }
+        }
+
         return true;
     }
 
@@ -44,6 +53,9 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.APPROVED);
+
+        notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was approved.");
+
         return true;
     }
 
@@ -52,6 +64,9 @@ public class InternshipController {
         if (internship == null) return false;
 
         internship.setInternshipStatus(InternshipStatus.REJECTED);
+
+        notificationManager.sendNotification(internship.getCompRepIC().getId(),"Your internship \"" + internship.getInternshipTitle() + "\" was rejected.");
+
         return true;
     }
 
