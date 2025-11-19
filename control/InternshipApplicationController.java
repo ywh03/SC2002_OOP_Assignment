@@ -144,11 +144,7 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-<<<<<<< HEAD
-            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
-=======
             NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
->>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
 
             return true;
         }
@@ -162,11 +158,7 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-<<<<<<< HEAD
-            notificationManager.sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
-=======
             NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
->>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
 
             return true;
         }
@@ -184,11 +176,6 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
-<<<<<<< HEAD
-            if (careerCenterStaffId != null) {
-                notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
-            }
-=======
             List<CareerCentreStaff> allStaff = userRepository.findAll().stream()
                                             .filter(user -> user instanceof CareerCentreStaff) // only CareerCentreStaff
                                             .map(user -> (CareerCentreStaff) user)            // cast to CareerCentreStaff
@@ -198,7 +185,6 @@ public class InternshipApplicationController {
                         + intApp.getInternship().getInternshipTitle() + "\".");
             }
 
->>>>>>> 3a907cb (resolved notif bugs in internshipappcontroller)
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
