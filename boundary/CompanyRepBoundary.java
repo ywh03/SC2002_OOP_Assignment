@@ -50,21 +50,12 @@ public class CompanyRepBoundary {
             String choice = console.readLine("Choose an option: ");
 
             switch (choice) {
-<<<<<<< HEAD
-                case "1" -> createInternship(rep);
-                case "2" -> editInternship(rep);
-                case "3" -> toggleVisibility(rep);
-                case "4" -> displayApplications(rep);
-                case "5" -> processApplication(rep);
-                case "6" -> displayInternshipListings(rep);
-=======
                 case "1" -> createInternship(companyRep);
                 case "2" -> editInternship(companyRep);
                 case "3" -> toggleVisibility(companyRep);
                 case "4" -> displayApplications(companyRep);
                 case "5" -> processApplication(companyRep);
                 case "6" -> displayInternshipListings(companyRep);
->>>>>>> 6761b9ff0d78fc047a09f4ab60bb36ae31f2c078
                 case "7" -> {
                     System.out.println("Logging out...");
                     return;
@@ -201,7 +192,7 @@ public class CompanyRepBoundary {
     }
 
     private void processApplication(CompanyRep companyRep) {
-        // NEED TO PRINT OUT ALL THE APPLICATIONS 
+        displayApplications(companyRep);
         
         String internshipApplicationId = console.readLine("Internship Application ID: ");
         String choice = console.readLine("Accept or Reject (A/R)").toUpperCase();
