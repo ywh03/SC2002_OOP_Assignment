@@ -58,7 +58,7 @@ public class CareerCentreStaffBoundary {
                     System.out.println("Logging out...");
                     return;
                 }
-                case "5" -> displayNotifications(careerCentreStaff);
+                case "6" -> displayNotifications(careerCentreStaff);
                 default -> System.out.println("Invalid choice.");
             }
         }
