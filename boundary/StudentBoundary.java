@@ -13,18 +13,42 @@ import java.util.List;
 
 import manager.NotificationManager;
 
+/**
+ * Boundary class responsible for all interactions with a Student user.
+ *
+ * <p>This class handles user interface concerns such as:</p>
+ * <ul>
+ *     <li>Viewing available internships</li>
+ *     <li>Submitting internship applications</li>
+ *     <li>Viewing and withdrawing applications</li>
+ *     <li>Responding to internship offers</li>
+ *     <li>Displaying student notifications</li>
+ * </ul>
+ */
 public class StudentBoundary {
 
     private final InternshipController internshipController;
     private final InternshipApplicationController internshipApplicationController;
     private final ConsoleUtil console;
 
+    /**
+     * Constructs the StudentBoundary with the required controllers.
+     *
+     * @param internshipController controller responsible for retrieving internship listings
+     * @param internshipApplicationController controller responsible for managing applications
+     * @param console helper class for safe console input
+     */
     public StudentBoundary(InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
         this.internshipController = internshipController;
         this.internshipApplicationController = internshipApplicationController;
         this.console = console;
     }
 
+    /**
+     * Displays the main Student menu and routes the student's selected actions.
+     *
+     * @param student the logged-in student whose actions are being handled
+     */
     public void displayMenu(Student student) {
         while (true) {
             System.out.println("\n=== Student Menu ===");
@@ -54,6 +78,13 @@ public class StudentBoundary {
         }
     }
 
+    /**
+     * Displays all internships available to the logged-in student.
+     * The availability logic (e.g., date checks, major matching, level restrictions) is delegated to the InternshipController.
+     *
+     * @param student the student requesting to view available internships
+     * @return true if internships were displayed, false if none available
+     */
     private boolean displayInternships(Student student) {
         // Need to retroactively apply filters
         List<Internship> internships = internshipController.getAvailableInternships(student);
@@ -71,6 +102,12 @@ public class StudentBoundary {
         return true;
     }
 
+    /**
+     * Allows the student to apply for an internship after displaying available internships. Delegates application validation and creation
+     * to the InternshipApplicationController.
+     *
+     * @param student the student submitting the application
+     */
     private void applyInternship(Student student) {
         if (!displayInternships(student)) return;
 
@@ -86,6 +123,12 @@ public class StudentBoundary {
         }
     }
 
+    /**
+     * Displays all internship applications submitted by the student.
+     *
+     * @param student the student whose applications are viewed
+     * @return true if applications exist, false otherwise
+     */
     private boolean displayAllApplications(Student student) {
         List<InternshipApplication> myInternshipApplications = internshipApplicationController.studentGetInternshipApplications(student.getId());
         if (myInternshipApplications.isEmpty()) {
@@ -100,6 +143,12 @@ public class StudentBoundary {
         return true;
     }
 
+    /**
+     * Initiates a withdrawal request for one of the student's applications.
+     * Only applications eligible for withdrawal may be submitted.
+     *
+     * @param student the student requesting a withdrawal
+     */
     private void withdrawRequest(Student student) {
         if (!displayAllApplications(student)) return;
         
@@ -114,6 +163,12 @@ public class StudentBoundary {
         }
     }
 
+    /**
+     * Displays all system notifications addressed to the student.
+     * Notifications are retrieved from the NotificationManager and marked as read after display.
+     *
+     * @param student the student viewing notifications
+     */
     private void displayNotifications(Student student) {
         List<Notification> notifs = NotificationManager.getInstance().getNotifications(student.getId());
 
@@ -133,6 +188,15 @@ public class StudentBoundary {
         NotificationManager.getInstance().markAllAsRead(student.getId());
     }
 
+    /**
+     * Allows the student to respond to internship offers.
+     * Only applications with status SUCCESSFUL and that have not yet been accepted or rejected are shown.
+     *
+     * <p>The student may choose to accept or reject an offer, and the
+     * application state is updated accordingly.</p>
+     *
+     * @param student the student responding to internship offers
+     */
     private void handleInternshipOffers(Student student){
         // Get all internship applications with status SUCCESSFUL (offer made)
         List<InternshipApplication> offers = student.getAppliedInternships().stream()
