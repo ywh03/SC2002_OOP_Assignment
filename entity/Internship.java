@@ -9,6 +9,19 @@ import entity.enums.InternshipStatus;
 import entity.enums.InternshipLevel;
 import entity.enums.Major;
 
+/**
+ * Represents an internship posting created by a Company Representative in the
+ * Internship Management System.
+ *
+ * <p>An Internship contains all relevant posting information such as title,
+ * description, level, preferred major, application dates, and company details.
+ * It also maintains a list of all {@link InternshipApplication} objects
+ * submitted for this posting.</p>
+ *
+ * <p>This class implements {@link Identifiable} to ensure consistent ID handling
+ * through the repository layer, and {@link Serializable} to allow the object to
+ * be persisted to disk.</p>
+ */
 public class Internship implements Serializable, Identifiable {
 
     @Serial
@@ -28,6 +41,21 @@ public class Internship implements Serializable, Identifiable {
     private ArrayList<InternshipApplication> internshipApplications; // contains the internship applications JUST for this internship
     private boolean visibility;
 
+    /**
+     * Constructs a new Internship posting with the specified details.
+     *
+     * @param internshipId       unique identifier for the internship
+     * @param internshipTitle    title of the internship posting
+     * @param description        description of duties and requirements
+     * @param level              difficulty/experience level required
+     * @param preferredMajor     preferred major for applicants
+     * @param appOpenDate        date when applications open
+     * @param appCloseDate       date when applications close
+     * @param internshipStatus   posting approval status
+     * @param companyName        name of the hiring company
+     * @param compRepIC          company representative in charge
+     * @param numOfSlots         number of available internship slots
+     */
     public Internship(String internshipId, String internshipTitle, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, InternshipStatus internshipStatus, String companyName, CompanyRep compRepIC, int numOfSlots) {
         this.internshipId = internshipId;
         this.internshipTitle = internshipTitle;
@@ -44,6 +72,11 @@ public class Internship implements Serializable, Identifiable {
         this.visibility = false; // default off so the staff can toggle on later
     }
 
+    /**
+     * Returns the unique identifier of this internship.
+     *
+     * @return internship ID
+     */
     @Override
     public String getId() {
         return this.internshipId;
@@ -76,6 +109,12 @@ public class Internship implements Serializable, Identifiable {
         return internshipApplications;
     }
 
+    /**
+     * Returns all internship applications that have been accepted
+     * (i.e., SUCCESSFUL status).
+     *
+     * @return list of accepted applications
+     */
     public ArrayList<InternshipApplication> getAcceptedApps() { 
         ArrayList<InternshipApplication> acceptedApps = new ArrayList<>();
         for (InternshipApplication app: internshipApplications) {
