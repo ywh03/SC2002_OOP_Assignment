@@ -5,19 +5,22 @@ import entity.User;
 import repository.UserRepository;
 
 public class AuthController{
-    private User user;
+    private User currentUser;
     private boolean loggedIn;
     private UserRepository userRepository;
 
-    public AuthController(User user) {
-        this.user = user;
+    public AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.currentUser = null;
         this.loggedIn = false; // dafault
     }
     
-    public User login(String userID, String password) {
-        if (user.getUserID().equals(userID) && user.getPassword().equals(password)) {
+    public User login(String userId, String password) {
+        User user = userRepository.findById(userId);
+        if (user != null && user.getPassword().equals(password)) {
             loggedIn = true;
-            return user;
+            currentUser = user;
+            return currentUser;
         } else {
             return null;
         }
@@ -26,6 +29,7 @@ public class AuthController{
     public boolean logout() {
         if (loggedIn) {
             loggedIn = false;
+            currentUser = null;
             return true;
         } else {
             return false;
@@ -33,25 +37,23 @@ public class AuthController{
     }
 
     public boolean changePassword(String newPassword) {
-        if (loggedIn) {
-            user.setPassword(newPassword);
+        if (loggedIn && currentUser != null) {
+            currentUser.setPassword(newPassword);
+            userRepository.save(currentUser); // update repo to save this new pw
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean registerCompanyRep(String userId, String fullName, String password, String companyName, String department,String position){
-
-        User existingUser = userRepository.findById(userId);
-        if (existingUser != null) {
-            return false;
+    public boolean registerCompanyRep(CompanyRep companyRep){
+        if (userRepository.findById(companyRep.getId()) != null) {
+            return false; // companyRep already exists, dont need to reregister
         }
 
-        CompanyRep rep = new CompanyRep(userId, fullName, password, companyName, department, position);
-        rep.setApproved(false);
+        companyRep.setApproved(false);
 
-        userRepository.save(rep);
+        userRepository.save(companyRep);
 
         return true;
     }
