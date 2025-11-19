@@ -26,17 +26,29 @@ public class InternshipController {
         this.internshipRepository = internshipRepo;
         this.userRepository = userRepo;
     }
-    public boolean toggleVisibility(Internship internship){
+    public boolean toggleVisibility(CompanyRep companyRep, String internshipId){
+        Internship internship = this.internshipRepository.findById(internshipId);
+        if (internship == null) return false;
+
+        if (!internship.getCompRepIC().equals(companyRep)) return false;
+
         internship.setVisibility(!internship.getVisibility());
+        internshipRepository.save(internship);
         return true;
     }
 
-    public boolean approveInternship(Internship internship){
+    public boolean approveInternship(String internshipId){
+        Internship internship = this.internshipRepository.findById(internshipId);
+        if (internship == null) return false;
+
         internship.setInternshipStatus(InternshipStatus.APPROVED);
         return true;
     }
 
-    public boolean rejectInternship(Internship internship){
+    public boolean rejectInternship(String internshipId){
+        Internship internship = this.internshipRepository.findById(internshipId);
+        if (internship == null) return false;
+
         internship.setInternshipStatus(InternshipStatus.REJECTED);
         return true;
     }
