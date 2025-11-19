@@ -17,9 +17,10 @@ public class CompanyRepBoundary {
     private final InternshipApplicationController internshipApplicationController;
     private final ConsoleUtil console;
 
-    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, ConsoleUtil console) {
+    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
         this.companyRepController = companyRepController;
         this.internshipController = internshipController;
+        this.internshipApplicationController = internshipApplicationController;
         this.console = console;
     }
 

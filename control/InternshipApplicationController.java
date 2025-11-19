@@ -8,6 +8,8 @@ import repository.InternshipRepository;
 import entity.Student;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -87,6 +89,16 @@ public class InternshipApplicationController{
                 return false;
             }
         
+        if (!canApply(student)) {
+            System.out.println("You cannot apply for any more internships.");
+            return false;
+        }
+
+        if (!isEligible(student, internship)) {
+            System.out.println("You are not eligible to apply for this internship.");
+            return false;
+        }
+
         // student haven't apply yet -> generate a new id for them
         String newId = internshipApplicationRepository.generateNextId();
         InternshipApplication newIntApp = new InternshipApplication(newId, internship, student);
@@ -185,18 +197,18 @@ public class InternshipApplicationController{
         // rej 6: internship is filled
         if (internship.getInternshipStatus() == InternshipStatus.FILLED) return false;
 
-        // rej 7: student applied for this specific internship already
-        if (internship.getInternshipApplications().stream().anyMatch(a -> a.getInternship().getId().equals(internship.getId()))) {
-            return false;
-        }
-
-        // rej 8: student can't apply for anymore internships
-        if (!canApply(student)) return false;
-
         return true;
     }
 
-    public String displayInternshipApplications(String InternshipId) {
+    public ArrayList<InternshipApplication> getInternshipApplications(String internshipId) {
+    ArrayList<InternshipApplication> internshipApplications = new ArrayList<>();
 
+    for (InternshipApplication intApp : internshipApplicationRepository.findAll()) {
+        if (intApp.getInternship().getId().equals(internshipId)) {
+            internshipApplications.add(intApp);
+        }
+    }
+
+    return internshipApplications;
     }
 }
