@@ -1,33 +1,34 @@
 package control;
 
+import entity.CompanyRep;
+import repository.UserRepository;
+
 import java.util.ArrayList;
 
 public class CompanyRepController {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public CompanyRepController(UserRepository userRepo){
         this.userRepository = userRepo;
     }
 
-    public void authoriseCompanyRep(CompanyRep companyRepId){
-        companyRep companyRep = this.userRepository.findById(companyRepId);
+    public void authoriseCompanyRep(String companyRepId){
+        CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
         companyRep.setApproved(true);
     }
 
-    public void rejectCompanyRep(CompanyRep companyRepId){
-        companyRep companyRep = this.userRepository.findById(companyRepId);
+    public void rejectCompanyRep(String companyRepId){
+        CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
         companyRep.setApproved(false);
     }
 
     public ArrayList<CompanyRep> approvedCompanyReps(){
-        ArrayList<CompanyRep> companyReps = this.userRepository.findAll();
-        ArrayList<CompanyRep> approvedCompanyReps = new ArrayList<>(companyReps.stream().filter(CompanyRep::getApproved).toList());
-        return approvedCompanyReps;
+        ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
+        return new ArrayList<>(companyReps.stream().filter(CompanyRep::getApproved).toList());
     }
 
     public ArrayList<CompanyRep> getPendingRegistrations(){
-        ArrayList<CompanyRep> companyReps = this.userRepository.findAll();
-        ArrayList<CompanyRep> pendingRegistrations = new ArrayList<>(companyReps.stream().filter(c -> !c.getApproved()).toList());
-        return pendingRegistrations;
+        ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
+        return new ArrayList<>(companyReps.stream().filter(c -> !c.getApproved()).toList());
     }
 }
