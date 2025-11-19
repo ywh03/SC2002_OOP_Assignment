@@ -20,30 +20,24 @@ import java.util.stream.Collectors;
 
 public class InternshipApplicationController {
 
-    private InternshipApplicationRepository internshipApplicationRepository;
-    private InternshipRepository internshipRepository;
-    private UserRepository userRepository;
-    private NotificationManager notificationManager;
+    private final InternshipApplicationRepository internshipApplicationRepository;
+    private final InternshipRepository internshipRepository;
+    private final UserRepository userRepository;
+    private final NotificationManager notificationManager;
+    private final String careerCenterStaffId;
 
-    private String careerCenterStaffId;
-
-    public InternshipApplicationController() { // empty constructor, dont create a new repo lol
-    }
-
-    public void setUserRepository(UserRepository userRepository) {
+    public InternshipApplicationController(
+            InternshipApplicationRepository internshipAppRepo,
+            InternshipRepository internshipRepository,
+            UserRepository userRepository,
+            NotificationManager notificationManager,
+            String careerCenterStaffId
+    ) {
+        this.internshipApplicationRepository = internshipAppRepo;
+        this.internshipRepository = internshipRepository;
         this.userRepository = userRepository;
-    }
-    public void setInternshipApplicationRepository(InternshipApplicationRepository repo) {
-        this.internshipApplicationRepository = repo;
-    }
-    public void setInternshipRepository(InternshipRepository repo) {
-        this.internshipRepository = repo;
-    }
-    public void setNotificationManager(NotificationManager manager) {
-        this.notificationManager = manager;
-    }
-    public void setCareerCenterStaffId(String id) {
-        this.careerCenterStaffId = id;
+        this.notificationManager = notificationManager;
+        this.careerCenterStaffId = careerCenterStaffId;
     }
 
     public void printApplication() {
