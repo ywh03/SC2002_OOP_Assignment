@@ -235,14 +235,19 @@ public class StudentBoundary {
     
         switch (decision) {
             case "A" -> {
-                selectedApp.setOfferAccepted(true);
-                System.out.println("You have accepted the offer for " + selectedApp.getInternship().getInternshipTitle());
+                boolean success = internshipApplicationController.acceptOffer(selectedApp);
+                if (success) {
+                    System.out.println("You have accepted the offer for " + selectedApp.getInternship().getInternshipTitle());
+                } else {
+                    System.out.println("Cannot accept this offer.");
+                }
             }
             case "R" -> {
-                selectedApp.setOfferAccepted(false);
+                internshipApplicationController.rejectOffer(selectedApp.getId());
                 System.out.println("You have rejected the offer for " + selectedApp.getInternship().getInternshipTitle());
             }
             default -> System.out.println("Invalid input. Offer not changed.");
+
         }
         
     }

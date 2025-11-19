@@ -65,7 +65,7 @@ public class InternshipApplicationController {
     }
 
     // student accepts the offer
-    public void acceptOffer(InternshipApplication intApp) { 
+    public boolean acceptOffer(InternshipApplication intApp) { 
         if (intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL && !intApp.getOfferAccepted()) {
             intApp.setOfferAccepted(true);
             internshipApplicationRepository.save(intApp); //check if update = save
@@ -89,10 +89,9 @@ public class InternshipApplicationController {
                 internship.setInternshipStatus(InternshipStatus.FILLED);
             }
             internshipRepository.save(internship);
-            System.out.println(intApp.getStudent().getFullName() + " has accepted the internship offer.");
-        } else {
-            System.out.println("Cannot accept offer for this application.");
+            return true;
         }
+        return false;
     }
 
     // student rejects the offer
