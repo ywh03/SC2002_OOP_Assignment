@@ -1,6 +1,7 @@
 package manager;
 
 import java.util.*;
+import entity.Notification;
 
 public class NotificationManager {
 
