@@ -123,5 +123,41 @@ public class CareerCentreStaffBoundary () {
 
     }
 
+    private void displayPendingWithdrawals(CareerCentreStaff careerCentreStaff) {
+        List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getPendingWithdrawals();
+
+        if (pendingWithdrawals.isEmpty()) {
+            System.out.println("No pending withdrawal requests.");
+            return;
+        }
+
+        System.out.println("\n=== Pending Withdrawal Requests ===");
+        for (InternshipApplication internshipApplication : pendingWithdrawals) {
+            System.out.println(internshipApplication.getId() + " | Student: " + internshipApplication.getStudent().getId()
+                    + " | Company: " + internshipApplication.getInternship().getCompanyName() + " | Internship: " + internshipApplication.getInternship().getInternshipTitle());
+        }
+
+        String applicationid = console.readLine("Enter Application ID to process: ");
+
+        String choice =  console.readLine("Approve or Reject? (A/R): ");
+
+        boolean success;
+
+        if (choice.equals("A")) {
+            success = internshipApplicationController.approveAppWithdrawal(applicationid);
+        } else if (choice.equals("R")) {
+            success = internshipApplicationController.rejectAppWithdrawal(applicationid);
+        } else {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        if (success) {
+            System.out.println("Withdrawal request updated.");
+        } else {
+            System.out.println("Failed to update Withdrawal request.");
+        }
+    }
+
 
 }

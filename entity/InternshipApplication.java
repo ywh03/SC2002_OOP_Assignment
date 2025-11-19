@@ -32,4 +32,5 @@ public class InternshipApplication implements Serializable, Identifiable {
     public void setOfferAccepted(boolean offerAccepted) {this.offerAccepted = offerAccepted;}
     public Student getStudent() {return student;}
     public void setStudent(Student student) {this.student = student;}
+
 }
