@@ -1,4 +1,4 @@
-import java.util.List;
+package entity;
 
 public interface Notifiable {
     void receiveNotification(Notification notification);

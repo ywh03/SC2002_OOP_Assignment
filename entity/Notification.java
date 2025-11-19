@@ -1,5 +1,7 @@
-import java.io.Serializable;
-import java.util.Date;
+package entity;
+
+import java.io.Serializable;  // for Serializable
+import java.util.Date;        // for timestamp
 
 public class Notification implements Serializable {
 
