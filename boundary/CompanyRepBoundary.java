@@ -60,7 +60,7 @@ public class CompanyRepBoundary {
                 case "4" -> displayApplications(companyRep);
                 case "5" -> processApplication(companyRep);
                 case "6" -> displayInternshipListings(companyRep);
-                case "6" -> displayNotifications(companyRep);
+                case "7" -> displayNotifications(companyRep);
                 case "8" -> {
                     System.out.println("Logging out...");
                     return;
