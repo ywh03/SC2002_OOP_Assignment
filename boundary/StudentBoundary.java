@@ -33,7 +33,7 @@ public class StudentBoundary {
             String choice = console.readLine("Enter choice: ");
 
             switch (choice) {
-                case "1" -> displayInternships();
+                case "1" -> displayInternships(student);
                 case "2" -> applyInternship(student);
                 case "3" -> displayAllApplications(student);
                 case "4" -> withdrawRequest(student);
@@ -46,9 +46,9 @@ public class StudentBoundary {
         }
     }
 
-    private void displayInternships() {
+    private void displayInternships(Student student) {
         // Need to retroactively apply filters
-        List<Internship> internships = internshipController.getAvailableInternships();
+        List<Internship> internships = internshipController.getAvailableInternships(student);
 
         if (internships.isEmpty()) {
             System.out.println("There are not available internships.");
@@ -63,6 +63,8 @@ public class StudentBoundary {
     }
 
     private void applyInternship(Student student) {
+        displayInternships(student);
+        System.out.println();
         String internshipId = console.readLine("Enter internship ID to apply for: ");
 
         boolean success = internshipApplicationController.apply(internshipId, student);
@@ -88,6 +90,8 @@ public class StudentBoundary {
     }
 
     private void withdrawRequest(Student student) {
+        displayAllApplications(student);
+        
         String applicationId = console.readLine("Enter application ID to withdraw: ");
 
         boolean success = internshipApplicationController.requestWithdrawal(applicationId, student);
