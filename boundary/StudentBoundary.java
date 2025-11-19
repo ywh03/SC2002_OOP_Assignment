@@ -54,13 +54,13 @@ public class StudentBoundary {
         }
     }
 
-    private void displayInternships(Student student) {
+    private boolean displayInternships(Student student) {
         // Need to retroactively apply filters
         List<Internship> internships = internshipController.getAvailableInternships(student);
 
         if (internships.isEmpty()) {
             System.out.println("There are no available internships.");
-            return;
+            return false;
         }
 
         System.out.println("\n=== Available Internships ===");
@@ -68,10 +68,12 @@ public class StudentBoundary {
             System.out.println(internship.getId() + " | " + internship.getInternshipTitle() + " | "
                     + internship.getDescription() + " | " + internship.getCompanyName());
         }
+        return true;
     }
 
     private void applyInternship(Student student) {
-        displayInternships(student);
+        if (!displayInternships(student)) return;
+
         System.out.println();
         String internshipId = console.readLine("Enter internship ID to apply for: ");
 
