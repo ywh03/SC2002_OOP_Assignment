@@ -111,6 +111,9 @@ public class InternshipApplicationController{
         internship.getInternshipApplications().add(newIntApp); // also add to internship's list
         internshipRepository.save(internship);
         System.out.println(student.getFullName() + " applied for " + internship.getInternshipTitle());
+
+        notificationManager.sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
+
         return true;
     }
 
@@ -120,6 +123,9 @@ public class InternshipApplicationController{
         if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
+
+            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was approved.");
+
             return true;
         }
         return false;
@@ -131,6 +137,9 @@ public class InternshipApplicationController{
         if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
+
+            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was rejected.");
+
             return true;
         }
         return false;
@@ -146,6 +155,9 @@ public class InternshipApplicationController{
         if (intApp.getApplicationStatus() == ApplicationStatus.PENDING) {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
+
+            notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + application.getInternship().getInternshipTitle() + "\".");
+
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
