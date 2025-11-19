@@ -17,7 +17,7 @@ public class InternshipApplicationRepository extends Repository<InternshipApplic
      * maximum existing numeric ID and incrementing it.
      */
     public InternshipApplicationRepository() {
-        super("data/internshipApplications.ser");
+        super("./SC2002_OOP_Assignment/data/internshipApplications.ser");
         nextId = computeMaxNumericId(PREFIX) + 1;
     }
 
