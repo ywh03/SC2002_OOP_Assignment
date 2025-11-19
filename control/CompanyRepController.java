@@ -5,6 +5,8 @@ import repository.UserRepository;
 
 import java.util.ArrayList;
 
+import Manager.NotificationManager;
+
 public class CompanyRepController {
     private final UserRepository userRepository;
 
@@ -17,6 +19,9 @@ public class CompanyRepController {
         if (companyRep == null) return false;
 
         companyRep.setApproved(true);
+
+        NotificationManager.getInstance().sendNotification(companyRepId,"Your company representative registration has been approved.");
+
         return true;
     }
 
