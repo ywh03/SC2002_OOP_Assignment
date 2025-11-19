@@ -52,10 +52,10 @@ public class CompanyRepBoundary {
             switch (choice) {
                 case "1" -> createInternship(companyRep);
                 case "2" -> editInternship(companyRep);
-                case "3" -> handleToggleVisibility(rep);
-                case "4" -> handleViewApplicants(rep);
-                case "5" -> handleApplicantDecision(rep);
-                case "6" -> handleViewPostings(rep);
+                case "3" -> toggleVisibility(companyRep);
+                case "4" -> displayApplications(companyRep);
+                case "5" -> processApplication(companyRep);
+                case "6" -> displayInternshipListings(companyRep);
                 case "7" -> {
                     System.out.println("Logging out...");
                     return;
@@ -198,9 +198,9 @@ public class CompanyRepBoundary {
         boolean success;
 
         if (choice.equals("A")) {
-            success = internshipApplicationController.approveInternshipApplication(companyRep, internshipApplicationId);
+            success = internshipApplicationController.approveInternshipApplication(internshipApplicationId);
         } else if (choice.equals("R")) {
-            success = internshipApplicationController.rejectInternshipApplication(companyRep, internshipApplicationId);
+            success = internshipApplicationController.rejectInternshipApplication(internshipApplicationId);
         } else {
             System.out.println("Invalid choice.");
             return;

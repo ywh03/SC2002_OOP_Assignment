@@ -115,25 +115,25 @@ public class InternshipApplicationController{
     }
 
     // means application status is successful -> give offer
-    public void approveInternshipApplication(String internshipAppId) {
+    public boolean approveInternshipApplication(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
-        // } else {
-        //     // System.out.println("Application not found.");
+            return true;
         }
+        return false;
     }
 
     // company rejects application -> unsuccessful
-    public void rejectInternshipApplication(String internshipAppId) {
+    public boolean rejectInternshipApplication(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null) {
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
-        // } else {
-        //     // System.out.println("Application not found.");
+            return true;
         }
+        return false;
     }
 
     // student requests withdrawal
