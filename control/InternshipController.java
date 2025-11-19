@@ -13,6 +13,7 @@ import entity.InternshipApplication;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
+import manager.NotificationManager;
 import repository.InternshipRepository;
 import repository.UserRepository;
 import util.filter.Filter;
@@ -23,10 +24,12 @@ import util.filter.StatusFilter;
 public class InternshipController {
     private final InternshipRepository internshipRepository;
     private final UserRepository userRepository;
+    private final NotificationManager notificationManager;
 
     public InternshipController(InternshipRepository internshipRepo, UserRepository userRepo){
         this.internshipRepository = internshipRepo;
         this.userRepository = userRepo;
+        notificationManager = new NotificationManager();
     }
     public boolean toggleVisibility(CompanyRep companyRep, String internshipId){
         Internship internship = this.internshipRepository.findById(internshipId);

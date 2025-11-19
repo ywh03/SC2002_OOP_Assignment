@@ -75,7 +75,7 @@ public class StudentBoundary {
         System.out.println();
         String internshipId = console.readLine("Enter internship ID to apply for: ");
 
-        boolean success = internshipApplicationController.apply(internshipId, student);
+        boolean success = internshipApplicationController.apply(internshipId, student.getId());
 
         if (success) {
             System.out.println("Application submitted");
