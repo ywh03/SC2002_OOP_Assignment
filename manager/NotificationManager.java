@@ -1,6 +1,7 @@
-package Manager;
+package manager;
 
 import java.util.*;
+import entity.Notification;
 
 public class NotificationManager {
 
@@ -9,7 +10,7 @@ public class NotificationManager {
     // userId → inbox (list of notifications)
     private HashMap<String, ArrayList<Notification>> userNotifications;
 
-    private NotificationManager() {
+    public NotificationManager() {
         this.userNotifications = new HashMap<>();
     }
 

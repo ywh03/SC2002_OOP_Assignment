@@ -1,27 +1,45 @@
 package control;
 
 import entity.InternshipApplication;
+import entity.CareerCentreStaff;
 import entity.Internship;
 import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
 import repository.InternshipRepository;
+import repository.UserRepository;
 import entity.Student;
+import entity.User;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 import entity.enums.Major;
+import manager.NotificationManager;
+import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InternshipApplicationController{
-    private InternshipApplicationRepository internshipApplicationRepository;
-    private InternshipRepository internshipRepository;
+public class InternshipApplicationController {
 
-    public InternshipApplicationController() { 
-        internshipApplicationRepository = new InternshipApplicationRepository();
-        internshipRepository = new InternshipRepository();
+    private final InternshipApplicationRepository internshipApplicationRepository;
+    private final InternshipRepository internshipRepository;
+    private final UserRepository userRepository;
+    private final NotificationManager notificationManager;
+    private final String careerCenterStaffId;
+
+    public InternshipApplicationController(
+            InternshipApplicationRepository internshipAppRepo,
+            InternshipRepository internshipRepository,
+            UserRepository userRepository,
+            NotificationManager notificationManager,
+            String careerCenterStaffId
+    ) {
+        this.internshipApplicationRepository = internshipAppRepo;
+        this.internshipRepository = internshipRepository;
+        this.userRepository = userRepository;
+        this.notificationManager = notificationManager;
+        this.careerCenterStaffId = careerCenterStaffId;
     }
 
     public void printApplication() {
@@ -77,10 +95,12 @@ public class InternshipApplicationController{
     }
 
     // student applies for an internship
-    public boolean apply(String internshipId, Student student) {
+    public boolean apply(String internshipId, String studentId) {
 
         Internship internship = internshipRepository.findById(internshipId);
+        User user = userRepository.findById(studentId);
 
+        if (!(user instanceof Student student)) return false;
         if (internship == null) return false;
 
         // if they already applied, do not accept
@@ -94,12 +114,12 @@ public class InternshipApplicationController{
             return false;
         }
         
-        if (!canApply(student)) {
+        if (!canApply(studentId)) {
             System.out.println("You cannot apply for any more internships.");
             return false;
         }
 
-        if (!isEligible(student, internship)) {
+        if (!isEligible(studentId, internshipId)) {
             System.out.println("You are not eligible to apply for this internship.");
             return false;
         }
@@ -112,7 +132,7 @@ public class InternshipApplicationController{
         internshipRepository.save(internship);
         System.out.println(student.getFullName() + " applied for " + internship.getInternshipTitle());
 
-        notificationManager.sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
+        NotificationManager.getInstance().sendNotification(internship.getCompRepIC().getId(), "A student has applied for your internship: " + internship.getInternshipTitle());
 
         return true;
     }
@@ -124,7 +144,7 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.SUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was approved.");
+            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was approved.");
 
             return true;
         }
@@ -138,7 +158,7 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.UNSUCCESSFUL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(application.getStudent().getId(),"Your application for \"" + application.getInternship().getInternshipTitle() + "\" was rejected.");
+            NotificationManager.getInstance().sendNotification(intApp.getStudent().getId(),"Your application for \"" + intApp.getInternship().getInternshipTitle() + "\" was rejected.");
 
             return true;
         }
@@ -156,7 +176,14 @@ public class InternshipApplicationController{
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
-            notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + application.getInternship().getInternshipTitle() + "\".");
+            List<CareerCentreStaff> allStaff = userRepository.findAll().stream()
+                                            .filter(user -> user instanceof CareerCentreStaff) // only CareerCentreStaff
+                                            .map(user -> (CareerCentreStaff) user)            // cast to CareerCentreStaff
+                                            .toList();;
+            for (CareerCentreStaff staff : allStaff) {
+                NotificationManager.getInstance().sendNotification(staff.getId(), "A withdrawal request has been submitted for internship \"" 
+                        + intApp.getInternship().getInternshipTitle() + "\".");
+            }
 
             return true;
         }
@@ -190,11 +217,12 @@ public class InternshipApplicationController{
         return false;
     }
 
-    public boolean canApply(Student student) {
-        // case 0: student don't exist:
-        if (student == null) {
-            return false;
+    public boolean canApply(String studentId) {
+        User user = userRepository.findById(studentId);
+        if (!(user instanceof Student student)) {
+            return false; // not a student or doesn't exist
         }
+
         // case 1: student has already accepted an offer
         boolean hasAcceptedOffer = student.getAppliedInternships().stream().anyMatch(a -> a.getOfferAccepted());
         if (hasAcceptedOffer) {
@@ -205,7 +233,13 @@ public class InternshipApplicationController{
         return currentIntAppCount < 3; // allow up to 3 active applications
     }
 
-    public boolean isEligible(Student student, Internship internship) {
+    public boolean isEligible(String studentId, String internshipId) {
+        User user = userRepository.findById(studentId);
+        if (!(user instanceof Student student)) return false;
+
+        Internship internship = internshipRepository.findById(internshipId);
+        if (internship == null) return false;
+
         // case 0: student don't exist:
         if (student == null | internship == null) {
             return false;

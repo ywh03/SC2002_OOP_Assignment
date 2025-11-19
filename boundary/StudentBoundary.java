@@ -3,13 +3,15 @@ package boundary;
 import control.InternshipApplicationController;
 import control.InternshipController;
 import entity.Internship;
+import entity.Notification;
 import entity.InternshipApplication;
 import entity.Student;
 import util.ConsoleUtil;
+import entity.enums.ApplicationStatus;
 
 import java.util.List;
 
-import Manager.NotificationManager;
+import manager.NotificationManager;
 
 public class StudentBoundary {
 
@@ -31,7 +33,8 @@ public class StudentBoundary {
             System.out.println("3. View My Applications");
             System.out.println("4. Withdraw Application");
             System.out.println("5. View Notifications");
-            System.out.println("6. Logout");
+            System.out.println("6. Accept / Reject Internship Offers");
+            System.out.println("7. Logout");
 
             String choice = console.readLine("Enter choice: ");
 
@@ -41,7 +44,8 @@ public class StudentBoundary {
                 case "3" -> displayAllApplications(student);
                 case "4" -> withdrawRequest(student);
                 case "5" -> displayNotifications(student);
-                case "6" -> {
+                case "6" -> handleInternshipOffers(student);
+                case "7" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -71,7 +75,7 @@ public class StudentBoundary {
         System.out.println();
         String internshipId = console.readLine("Enter internship ID to apply for: ");
 
-        boolean success = internshipApplicationController.apply(internshipId, student);
+        boolean success = internshipApplicationController.apply(internshipId, student.getId());
 
         if (success) {
             System.out.println("Application submitted");
@@ -126,5 +130,50 @@ public class StudentBoundary {
         NotificationManager.getInstance().markAllAsRead(student.getId());
     }
 
+    private void handleInternshipOffers(Student student){
+        // Get all internship applications with status SUCCESSFUL (offer made)
+        List<InternshipApplication> offers = student.getAppliedInternships().stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.SUCCESSFUL
+                            && !app.getOfferAccepted()) // only unaccepted offers
+                .toList();
+    
+        if (offers.isEmpty()) {
+            System.out.println("No internship offers to respond to.");
+            return;
+        }
+    
+        System.out.println("=== Internship Offers ===");
+        for (int i = 0; i < offers.size(); i++) {
+            InternshipApplication app = offers.get(i);
+            Internship internship = app.getInternship();
+            System.out.println((i + 1) + ". " + internship.getInternshipTitle() +
+                    " at " + internship.getCompanyName() +
+                    " | Status: " + app.getApplicationStatus());
+        }
+    
+        int choice = console.readInt("Enter the number of the internship you want to respond to (or 0 to go back): ");
+        if (choice == 0) return;
+    
+        if (choice < 1 || choice > offers.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+    
+        InternshipApplication selectedApp = offers.get(choice - 1);
+        String decision = console.readLine("Accept or Reject this offer? (A/R): ").toUpperCase();
+    
+        switch (decision) {
+            case "A" -> {
+                selectedApp.setOfferAccepted(true);
+                System.out.println("You have accepted the offer for " + selectedApp.getInternship().getInternshipTitle());
+            }
+            case "R" -> {
+                selectedApp.setOfferAccepted(false);
+                System.out.println("You have rejected the offer for " + selectedApp.getInternship().getInternshipTitle());
+            }
+            default -> System.out.println("Invalid input. Offer not changed.");
+        }
+        
+    }
 
 }
