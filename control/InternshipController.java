@@ -148,6 +148,10 @@ public class InternshipController {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public Internship getInternshipById(String id) {
+        return internshipRepository.findById(id);
+    }
+
     public ArrayList<InternshipApplication> getApplications(String internshipId){
         Internship internship = this.internshipRepository.findById(internshipId);
         return internship.getInternshipApplications();
