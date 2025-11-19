@@ -29,7 +29,7 @@ public class InternshipController {
     public InternshipController(InternshipRepository internshipRepo, UserRepository userRepo){
         this.internshipRepository = internshipRepo;
         this.userRepository = userRepo;
-        notificationManager = new NotificationManager();
+        notificationManager = NotificationManager.getInstance();
     }
     public boolean toggleVisibility(CompanyRep companyRep, String internshipId){
         Internship internship = this.internshipRepository.findById(internshipId);
@@ -103,7 +103,6 @@ public class InternshipController {
     }
 
     public ArrayList<Internship> generateReport(ArrayList<Filter> filters){
-        HashSet<Internship> filteredInternships = new HashSet<>();
         ArrayList<Internship> internships = this.internshipRepository.findAll();
 
         if (filters == null || filters.isEmpty()){
@@ -111,10 +110,8 @@ public class InternshipController {
         }
 
         return (ArrayList<Internship>) internships.stream()
-                .filter(internship -> filters.stream()
-                        .allMatch((filter -> filter.matches(internship)))
-                )
-                .toList();
+                .filter(internship -> filters.stream().allMatch(f -> f.matches(internship)))
+                .collect(Collectors.toCollection(ArrayList::new));
 
     }
 
