@@ -24,7 +24,6 @@ public class InternshipApplication implements Serializable, Identifiable {
         return this.internshipApplicationId;
     }
 
-    public String getInternshipApplicationId() {return internshipApplicationId;}
     public Internship getInternship() {return internship;}
     public void setInternship(Internship internship) {this.internship = internship;}
     public ApplicationStatus getApplicationStatus() {return applicationStatus;}

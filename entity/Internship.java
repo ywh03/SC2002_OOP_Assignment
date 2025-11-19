@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.ArrayList;
 import entity.enums.InternshipStatus;
 import entity.enums.InternshipLevel;
-import entity.enums.ApplicationStatus;
 
 public class Internship implements Serializable, Identifiable {
     private String internshipId;
@@ -41,7 +40,7 @@ public class Internship implements Serializable, Identifiable {
 
     @Override
     public String getId() {
-        return this.internshipID;
+        return this.internshipId;
     }
 
     public String getInternshipTitle() {return internshipTitle;}
