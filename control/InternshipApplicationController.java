@@ -32,7 +32,7 @@ public class InternshipApplicationController {
         this.internshipApplicationRepository = internshipApplicationRepository;
         this.internshipRepository = internshipRepository;
         this.userRepository = userRepository;
-        this.notificationManager = new NotificationManager();
+        this.notificationManager = NotificationManager.getInstance();
 
     }
 
