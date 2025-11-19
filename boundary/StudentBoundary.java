@@ -203,7 +203,7 @@ public class StudentBoundary {
      */
     private void handleInternshipOffers(Student student){
         // Get all internship applications with status SUCCESSFUL (offer made)
-        List<InternshipApplication> offers = student.getAppliedInternships().stream()
+        List<InternshipApplication> offers = internshipApplicationController.studentGetInternshipApplications(student.getId()).stream()
                 .filter(app -> app.getApplicationStatus() == ApplicationStatus.SUCCESSFUL
                             && !app.getOfferAccepted()) // only unaccepted offers
                 .toList();
