@@ -1,6 +1,7 @@
 package control;
 
 import entity.InternshipApplication;
+import entity.CareerCentreStaff;
 import entity.Internship;
 import entity.enums.ApplicationStatus;
 import repository.InternshipApplicationRepository;
@@ -25,8 +26,6 @@ public class InternshipApplicationController {
     private UserRepository userRepository;
     private NotificationManager notificationManager;
 
-    private String careerCenterStaffId;
-
     public InternshipApplicationController(InternshipApplicationRepository internshipApplicationRepository, InternshipRepository internshipRepository, UserRepository userRepository) { // empty constructor, dont create a new repo lol
 
         this.internshipApplicationRepository = internshipApplicationRepository;
@@ -47,9 +46,6 @@ public class InternshipApplicationController {
     }
     public void setNotificationManager(NotificationManager manager) {
         this.notificationManager = manager;
-    }
-    public void setCareerCenterStaffId(String id) {
-        this.careerCenterStaffId = id;
     }
 
     // student accepts the offer
@@ -170,9 +166,14 @@ public class InternshipApplicationController {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
-            if (careerCenterStaffId != null) {
-                notificationManager.sendNotification(careerCenterStaffId,"A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
+            List<String> careerStaffIds = userRepository.findAll().stream()
+                                                    .filter(user -> user instanceof CareerCentreStaff) // or check role
+                                                    .map(User::getId)
+                                                    .toList();
+            for (String staffId : careerStaffIds) {
+                notificationManager.sendNotification(staffId, "A withdrawal request has been submitted for internship \"" + intApp.getInternship().getInternshipTitle() + "\".");
             }
+
             return true;
         }
         // System.out.println("Cannot request withdrawal for this application.");
