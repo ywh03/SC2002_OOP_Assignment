@@ -41,6 +41,7 @@ public class CompanyRepBoundary {
     private final CompanyRepController companyRepController;
     private final InternshipController internshipController;
     private final InternshipApplicationController internshipApplicationController;
+    private final LoginBoundary loginBoundary;
     private final ConsoleUtil console;
 
     /**
@@ -51,10 +52,11 @@ public class CompanyRepBoundary {
      * @param internshipApplicationController controller for application processing
      * @param console utility helper for console input
      */
-    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console) {
+    public CompanyRepBoundary(CompanyRepController companyRepController,  InternshipController internshipController, InternshipApplicationController internshipApplicationController, ConsoleUtil console, LoginBoundary loginBoundary) {
         this.companyRepController = companyRepController;
         this.internshipController = internshipController;
         this.internshipApplicationController = internshipApplicationController;
+        this.loginBoundary = loginBoundary;
         this.console = console;
     }
 
@@ -73,8 +75,8 @@ public class CompanyRepBoundary {
             System.out.println("5. Accept/Reject Applicant");
             System.out.println("6. View My Postings");
             System.out.println("7. View Notifications");
-
-            System.out.println("8. Logout");
+            System.out.println("8: Change Password");
+            System.out.println("9. Logout");
 
             String choice = console.readLine("Choose an option: ");
 
@@ -86,7 +88,8 @@ public class CompanyRepBoundary {
                 case "5" -> processApplication(companyRep);
                 case "6" -> displayInternshipListings(companyRep);
                 case "7" -> displayNotifications(companyRep);
-                case "8" -> {
+                case "8" -> loginBoundary.handlePasswordChange(companyRep);
+                case "9" -> {
                     System.out.println("Logging out...");
                     return;
                 }

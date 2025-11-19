@@ -173,9 +173,8 @@ public class InternshipApplicationController {
 
         // if they already applied, do not accept
         boolean alreadyApplied = internshipApplicationRepository.findAll().stream()
-                .anyMatch(a -> a.getInternship()
-                .getId()
-                .equals(internshipId) && a.getStudent() == student);
+                .anyMatch(a -> a.getInternship().getId().equals(internshipId)
+                && a.getStudent().getId().equals(studentId));
 
         if (alreadyApplied) {
             System.out.println(student.getFullName() + " has already applied for " + internship.getInternshipTitle());
@@ -294,7 +293,7 @@ public class InternshipApplicationController {
         if (intApp != null  && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
             intApp.setApplicationStatus(ApplicationStatus.WITHDRAWN);
             internshipApplicationRepository.save(intApp);
-            intApp.getInternship().getInternshipApplications().remove(intApp);
+            intApp.getInternship().getInternshipApplications().removeIf(a -> a.getId().equals(intApp.getId()));
             internshipRepository.save(intApp.getInternship());
             return true;
         // } else {
@@ -376,7 +375,7 @@ public class InternshipApplicationController {
         if (internship == null) return false;
 
         // case 0: student don't exist:
-        if (student == null | internship == null) {
+        if (student == null || internship == null) {
             return false;
         }
         // rej 1: internship status (not sure if this is needed as well but put first lols -- depends on how we're toggling visibility imo)
