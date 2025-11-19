@@ -5,6 +5,7 @@ import java.util.Date;
 
 import entity.CompanyRep;
 import entity.Internship;
+import entity.InternshipApplication;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
 

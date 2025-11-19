@@ -50,7 +50,7 @@ public class CareerCentreStaffBoundary () {
     }
 
     private void displayPendingRegistrations(CareerCentreStaff careerCentreStaff) {
-        List<CompanyRep> pendingCompanyReps = companyRepController.getPendingCompanyReps();
+        List<CompanyRep> pendingCompanyReps = companyRepController.getPendingRegistrations();
 
         if (pendingCompanyReps.isEmpty()) {
             System.out.println("No pending company representative registrations.");
@@ -124,7 +124,7 @@ public class CareerCentreStaffBoundary () {
     }
 
     private void displayPendingWithdrawals(CareerCentreStaff careerCentreStaff) {
-        List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getPendingWithdrawals();
+        List<InternshipApplication> pendingWithdrawals = internshipApplicationController.getWithdrawalRequests();
 
         if (pendingWithdrawals.isEmpty()) {
             System.out.println("No pending withdrawal requests.");

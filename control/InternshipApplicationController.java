@@ -151,26 +151,30 @@ public class InternshipApplicationController{
         return false;
     }
 
-    public void approveAppWithdrawal(String internshipAppId) {
+    public boolean approveAppWithdrawal(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null  && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
             intApp.setApplicationStatus(ApplicationStatus.WITHDRAWN);
             internshipApplicationRepository.save(intApp);
             intApp.getInternship().getInternshipApplications().remove(intApp);
             internshipRepository.save(intApp.getInternship());
+            return true;
         // } else {
         //     System.out.println("Application not found.");
         }
+        return false;
     }
 
-    public void rejectAppWithdrawal(String internshipAppId) {
+    public boolean rejectAppWithdrawal(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
             intApp.setApplicationStatus(ApplicationStatus.PENDING);
             internshipApplicationRepository.save(intApp);
+            return true;
         // } else {
         //     System.out.println("Application not found.");
         }
+        return false;
     }
 
     public boolean canApply(Student student) {
@@ -226,6 +230,16 @@ public class InternshipApplicationController{
         return true;
     }
 
+    public ArrayList<InternshipApplication> getWithdrawalRequests() {
+
+        List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
+                .filter(a -> a.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL)
+                .toList();
+
+        return new ArrayList<>(result);
+
+    }
+
     public ArrayList<InternshipApplication> companyRepGetInternshipApplications(String internshipId) {
 
         List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
@@ -239,7 +253,7 @@ public class InternshipApplicationController{
     public ArrayList<InternshipApplication> studentGetInternshipApplications(String userId) {
 
         List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
-                .filter(internshipApplication -> internshipApplication.getStudent().equals(userId))
+                .filter(internshipApplication -> internshipApplication.getStudent().getId().equals(userId))
                 .toList();
 
         return new ArrayList<>(result);
