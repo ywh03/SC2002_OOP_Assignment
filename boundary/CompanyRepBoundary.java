@@ -50,12 +50,21 @@ public class CompanyRepBoundary {
             String choice = console.readLine("Choose an option: ");
 
             switch (choice) {
+<<<<<<< HEAD
                 case "1" -> createInternship(rep);
                 case "2" -> editInternship(rep);
                 case "3" -> toggleVisibility(rep);
                 case "4" -> displayApplications(rep);
                 case "5" -> processApplication(rep);
                 case "6" -> displayInternshipListings(rep);
+=======
+                case "1" -> createInternship(companyRep);
+                case "2" -> editInternship(companyRep);
+                case "3" -> toggleVisibility(companyRep);
+                case "4" -> displayApplications(companyRep);
+                case "5" -> processApplication(companyRep);
+                case "6" -> displayInternshipListings(companyRep);
+>>>>>>> 6761b9ff0d78fc047a09f4ab60bb36ae31f2c078
                 case "7" -> {
                     System.out.println("Logging out...");
                     return;
@@ -72,20 +81,33 @@ public class CompanyRepBoundary {
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
-        String levelInput = console.readLine("Level");
-        // convert to InternshipLevel enum
-        InternshipLevel level = InternshipLevel.valueOf(levelInput.toUpperCase()); 
-        String preferredMajorInput = console.readLine("Preferred Major: ");
-        // convert to Major enum
-        Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
+
+        InternshipLevel internshipLevel = null;
+        while (internshipLevel == null){
+            try {
+                String levelInput = console.readLine("Level (BASIC, INTERMEDIATE, ADVANCED): ");
+                internshipLevel = InternshipLevel.valueOf(levelInput.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid level. Please try again.");
+            }
+        }
+
+        Major preferredMajor = null;
+        while (preferredMajor == null){
+            try {
+                String majorInput = console.readLine("Preferred Major: ");
+                preferredMajor = Major.valueOf(majorInput.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid major. Please try again.");
+            }
+        }
+
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
-        String companyName = companyRep.getCompanyName(); 
-        CompanyRep compRepIC = companyRep;
+        String companyName = companyRep.getCompanyName();
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
-        
-        boolean success = internshipController.createInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
+        boolean success = internshipController.createInternship(internshipId,title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
         
         if (success) {
             System.out.println("Internship created.");
@@ -100,7 +122,8 @@ public class CompanyRepBoundary {
         ArrayList<Internship> pendingPostings = internshipController.getPendingInternships(companyRep.getId());
         if (pendingPostings.isEmpty()) {
             System.out.println("You have no internship postings available for editing (only pending status can be modified).");
-        return;
+            return;
+        }
         
         System.out.println("\n=== Editable Internship Postings ===");
         for (Internship internship : pendingPostings) {
@@ -119,11 +142,10 @@ public class CompanyRepBoundary {
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
         Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
         Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
-        String companyName = companyRep.getCompanyName(); 
-        CompanyRep compRepIC = companyRep;
+        String companyName = companyRep.getCompanyName();
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
-        boolean success = internshipController.editInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
+        boolean success = internshipController.editInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
         
         if (success) {
             System.out.println("Internship created.");
@@ -133,7 +155,7 @@ public class CompanyRepBoundary {
     }
 
     private void displayInternshipListings(CompanyRep companyRep) {
-        List<Internship> internships = internshipController.displayInternshipListings(companyRep);
+        List<Internship> internships = internshipController.getInternshipListings(companyRep.getId());
 
         if (internships.isEmpty()) {
             System.out.println("You have no Internship postings.");
@@ -162,7 +184,7 @@ public class CompanyRepBoundary {
 
     private void displayApplications(CompanyRep companyRep) {
         String internshipId = console.readLine("Internship ID: ");
-        List<InternshipApplication> internshipApplications = internshipController.displayApplications(internshipId);
+        List<InternshipApplication> internshipApplications = internshipController.getApplications(internshipId);
 
         if (internshipApplications == null) {
             System.out.println("Internship not found.");
@@ -174,7 +196,7 @@ public class CompanyRepBoundary {
         }
         System.out.println("\n=== Applications ===");
         for (InternshipApplication internshipApplication: internshipApplications) {
-            System.out.println(internshipApplication.getId() + " | Student: " + internshipApplication.getStudentId() + " | Status: " + internshipApplication.getStatus());
+            System.out.println(internshipApplication.getId() + " | Student: " + internshipApplication.getStudent().getId() + " | Status: " + internshipApplication.getApplicationStatus());
         }
     }
 
@@ -187,9 +209,9 @@ public class CompanyRepBoundary {
         boolean success;
 
         if (choice.equals("A")) {
-            success = internshipApplicationController.approveInternshipApplication(companyRep, internshipApplicationId);
+            success = internshipApplicationController.approveInternshipApplication(internshipApplicationId);
         } else if (choice.equals("R")) {
-            success = internshipApplicationController.rejectInternshipApplication(companyRep, internshipApplicationId);
+            success = internshipApplicationController.rejectInternshipApplication(internshipApplicationId);
         } else {
             System.out.println("Invalid choice.");
             return;
