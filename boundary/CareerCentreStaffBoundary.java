@@ -21,6 +21,8 @@ import util.filter.StatusFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import Manager.NotificationManager;
+
 public class CareerCentreStaffBoundary {
 
     private final InternshipController internshipController;
@@ -42,7 +44,8 @@ public class CareerCentreStaffBoundary {
             System.out.println("2. View / Approve / Reject Internship Postings");
             System.out.println("3. Handle Withdrawal Requests");
             System.out.println("4. Generate Internship Report");
-            System.out.println("5. Logout");
+            System.out.println("5. View Notifications");
+            System.out.println("6. Logout");
 
             String choice = console.readLine("Enter your choice: ");
 
@@ -54,6 +57,7 @@ public class CareerCentreStaffBoundary {
                     System.out.println("Logging out...");
                     return;
                 }
+                case "5" -> displayNotifications(careerCentreStaff);
                 default -> System.out.println("Invalid choice.");
             }
         }
@@ -251,5 +255,25 @@ public class CareerCentreStaffBoundary {
 
         return filters;
     }
+
+    private void displayNotifications(CareerCentreStaff careerCentreStaff) {
+        List<Notification> notifs = NotificationManager.getInstance().getNotifications(careerCentreStaff.getId());
+
+        if (notifs.isEmpty()) {
+            System.out.println("No notifications.");
+            return;
+        }
+
+        System.out.println("=== Notifications ===");
+        for (Notification n : notifs) {
+            // example: mark read/unread and message
+            System.out.println((n.isRead() ? "[READ] " : "[UNREAD] ") + n.getMessage()
+                    + " | " + n.getTimestamp());
+        }
+
+        // Optional: mark all as read once displayed
+        NotificationManager.getInstance().markAllAsRead(careerCentreStaff.getId());
+    }
+
 
 }
