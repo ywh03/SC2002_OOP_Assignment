@@ -3,8 +3,17 @@ package entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.Notification;
-
+/**
+ * Represents a Company Representative (CompanyRep) user in the Internship Management System.
+ *
+ * <p>A CompanyRep is responsible for creating, editing, and managing internship postings,
+ * as well as reviewing student applications. Their account must be approved by Career
+ * Centre Staff before they may access the system's features.</p>
+ *
+ * <p>This class extends {@link User}, inheriting core user fields such as ID, name,
+ * and password. Additional attributes are included to store company-specific
+ * information and approval/registration state.</p>
+ */
 public class CompanyRep extends User {
     private boolean approved = false;
     private int numOfInternships = 0;
@@ -14,7 +23,16 @@ public class CompanyRep extends User {
     private boolean registered = false;
     private List<Notification> notifications = new ArrayList<>();
 
-    // constructor
+    /**
+     * Constructs a new CompanyRep object with the specified personal and company details.
+     *
+     * @param userId      the unique ID for this representative
+     * @param fullName    the representative's full name
+     * @param password    login password
+     * @param companyName the company this representative belongs to
+     * @param department  the department within the company
+     * @param position    the representative's job role/position
+     */
     public CompanyRep(String userId, String fullName, String password, String companyName,
                      String department,String position) {
         super(userId, fullName, password);   // call the User constructor
@@ -23,12 +41,22 @@ public class CompanyRep extends User {
         this.position = position;
     }
 
+    /**
+     * Adds a notification to this representative's inbox.
+     *
+     * @param notification the notification object to add
+     */
     @Override
     public void receiveNotification(Notification notification) {
         notifications.add(notification);
         // optionally print to console/log
     }
 
+    /**
+     * Returns all notifications received by this representative.
+     *
+     * @return list of notifications
+     */
     @Override
     public List<Notification> getNotifications() {
         return notifications;

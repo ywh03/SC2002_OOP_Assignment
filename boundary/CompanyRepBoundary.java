@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import entity.enums.InternshipLevel;
+import entity.enums.InternshipStatus;
 import entity.enums.Major;
 
 
@@ -181,6 +182,11 @@ public class CompanyRepBoundary {
 
         if (!internshipToEdit.getCompRepIC().getId().equals(companyRep.getId())) {
             System.out.println("You are not authorized to edit this internship.");
+            return;
+        }
+
+        if (internshipToEdit.getInternshipStatus() != InternshipStatus.PENDING){
+            System.out.println("You can only edit PENDING internships.");
             return;
         }
 
