@@ -1,7 +1,7 @@
 package util.filter;
 
 import entity.Internship;
-import entity.enums.InternshipLevel;
+// import entity.enums.InternshipMajor;
 import entity.enums.Major;
 
 /**

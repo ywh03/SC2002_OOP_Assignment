@@ -224,6 +224,10 @@ public class InternshipController {
             .filter(internship -> { // within the same level
                 if (studentYear <= 2) {
                     return internship.getLevel() == InternshipLevel.BASIC;
+                } else if (studentYear == 3){
+                    return internship.getLevel() == InternshipLevel.INTERMEDIATE;
+                } else if (studentYear >= 4){
+                    return internship.getLevel() == InternshipLevel.ADVANCED;
                 } else {
                     return true;
                 }
