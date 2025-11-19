@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import entity.enums.InternshipStatus;
 import entity.enums.InternshipLevel;
+import entity.enums.Major;
 
 public class Internship implements Serializable, Identifiable {
     private String internshipId;
@@ -13,7 +14,7 @@ public class Internship implements Serializable, Identifiable {
     private String internshipTitle;
     private String description;
     private InternshipLevel level;
-    private String preferredMajor;
+    private Major preferredMajor;
     private Date appOpenDate;
     private Date appCloseDate; 
     private String companyName;
@@ -22,7 +23,7 @@ public class Internship implements Serializable, Identifiable {
     private ArrayList<InternshipApplication> internshipApplications; // contains the internship applications JUST for this internship
     private boolean visibility;
 
-    public Internship(String internshipId, String internshipTitle, String description, InternshipLevel level, String preferredMajor, Date appOpenDate, Date appCloseDate, InternshipStatus internshipStatus, String companyName, CompanyRep compRepIC, int numOfSlots) {
+    public Internship(String internshipId, String internshipTitle, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, InternshipStatus internshipStatus, String companyName, CompanyRep compRepIC, int numOfSlots) {
         this.internshipId = internshipId;
         this.internshipTitle = internshipTitle;
         this.description = description;
@@ -49,8 +50,8 @@ public class Internship implements Serializable, Identifiable {
     public void setDescription(String description) {this.description = description;}
     public InternshipLevel getLevel() {return level;}
     public void setLevel(InternshipLevel level) {this.level = level;}
-    public String getPreferredMajor() {return preferredMajor;}
-    public void setPreferredMajor(String preferredMajor) {this.preferredMajor = preferredMajor;}
+    public Major getPreferredMajor() {return preferredMajor;}
+    public void setPreferredMajor(Major preferredMajor) {this.preferredMajor = preferredMajor;}
     public Date getAppOpenDate() {return appOpenDate;}
     public void setAppOpenDate(Date appOpenDate) {this.appOpenDate = appOpenDate;}
     public Date getAppCloseDate() {return appCloseDate;}

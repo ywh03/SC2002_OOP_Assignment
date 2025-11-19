@@ -7,6 +7,8 @@ import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
 import util.ConsoleUtil;
+
+import java.util.ArrayList;
 import java.util.Date;
 import entity.enums.InternshipLevel;
 import entity.enums.Major;
@@ -32,21 +34,24 @@ public class CompanyRepBoundary {
         while (true) {
             System.out.println("\n=== Company Representative Menu ===");
             System.out.println("1. Create Internship Posting");
-            System.out.println("2. View My Postings");
+            System.out.println("2. Edit Internship Posting");
             System.out.println("3. Toggle Posting Visibility");
             System.out.println("4. View Applicants for a Posting");
             System.out.println("5. Accept/Reject Applicant");
-            System.out.println("6. Logout");
+            System.out.println("6. View My Postings");
+
+            System.out.println("7. Logout");
 
             String choice = console.readLine("Choose an option: ");
 
             switch (choice) {
-                case "1" -> handleCreatePosting(rep);
-                case "2" -> handleViewPostings(rep);
+                case "1" -> createInternship(rep);
+                case "2" -> editInternship(rep);
                 case "3" -> handleToggleVisibility(rep);
                 case "4" -> handleViewApplicants(rep);
                 case "5" -> handleApplicantDecision(rep);
-                case "6" -> {
+                case "6" -> handleViewPostings(rep);
+                case "7" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -56,6 +61,9 @@ public class CompanyRepBoundary {
     }
 
     private void createInternship(CompanyRep companyRep) {
+        String internshipId = ""; // how to get the internshipID
+
+
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
@@ -65,15 +73,52 @@ public class CompanyRepBoundary {
         String preferredMajorInput = console.readLine("Preferred Major: ");
         // convert to Major enum
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
-        String appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
-        String appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
-        String compRepId = companyRep.getId(); 
         String compRepIC = companyRep.getFullName(); 
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
         
-        boolean success = internshipController.createInternship(compRepId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
+        boolean success = internshipController.createInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
+        
+        if (success) {
+            System.out.println("Internship created.");
+        } else {
+            System.out.println("Failed to create internship.");
+        }
+    }
+
+    private void editInternship(CompanyRep companyRep) {
+        System.out.println("\n=== Edit Internship Posting ===");
+        // display all the postings 
+        ArrayList<Internship> pendingPostings = internshipController.getPendingInternships(companyRep.getId());
+        if (pendingPostings.isEmpty()) {
+            System.out.println("You have no internship postings available for editing (only pending status can be modified).");
+        return;
+        
+        System.out.println("\n=== Editable Internship Postings ===");
+        for (Internship internship : pendingPostings) {
+            System.out.println(internship.getId() + " | " + internship.getInternshipTitle() + " | Visible: " + internship.getVisibility());
+        }
+
+        String internshipId = console.readLine("Enter ID of posting: ");
+        // enter the details 
+        String title = console.readLine("Title: ");
+        String description = console.readLine("Description: ");
+        String levelInput = console.readLine("Level");
+        // convert to InternshipLevel enum
+        InternshipLevel level = InternshipLevel.valueOf(levelInput.toUpperCase()); 
+        String preferredMajorInput = console.readLine("Preferred Major: ");
+        // convert to Major enum
+        Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
+        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        String companyName = companyRep.getCompanyName(); 
+        String compRepIC = companyRep.getFullName(); 
+        int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
+        
+        boolean success = internshipController.editInternship(internshipId,title, description, level, preferredMajor, appOpenDate, appCloseDate, companyName, compRepIC, numOfSlots);
         
         if (success) {
             System.out.println("Internship created.");

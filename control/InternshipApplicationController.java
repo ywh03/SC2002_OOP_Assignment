@@ -8,6 +8,7 @@ import repository.InternshipRepository;
 import entity.Student;
 import entity.enums.InternshipLevel;
 import entity.enums.InternshipStatus;
+import entity.enums.Major;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -213,10 +214,10 @@ public class InternshipApplicationController{
         if (close != null && today.after(close)) return false;
 
         // rej 4: check for preferred major (not sure if this one we incl here or not as well)
-        String preferredMajor = internship.getPreferredMajor();
-        if (preferredMajor != null && !preferredMajor.trim().isEmpty()) {
+        Major preferredMajor = internship.getPreferredMajor();
+        if (preferredMajor != null) {
             if (student.getMajor() == null) return false;
-            if (!preferredMajor.trim().equalsIgnoreCase(student.getMajor().trim())) return false;
+            if (student.getMajor() != preferredMajor) return false;
         }
 
         // rej 5: internship level don't match the year (not sure if this one we incl here or not as well)

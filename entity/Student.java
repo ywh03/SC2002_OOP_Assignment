@@ -1,16 +1,16 @@
 package entity;
 
 import java.util.ArrayList;
+import entity.enums.Major;
 
 public class Student extends User{
     private int yearOfStudy;
-    private String major;
+    private Major major;
     private ArrayList<InternshipApplication> appliedInternships = new ArrayList<>();
 
     // constructor
-    public Student(String userId, String fullName, String password, int yearOfStudy, String major){
+    public Student(String userId, String fullName, String password, int yearOfStudy, Major major){
         super(userId, fullName, password);
-        this.userId = userId;
         this.yearOfStudy = yearOfStudy;
         this.major = major;
     }
@@ -24,11 +24,11 @@ public class Student extends User{
         this.yearOfStudy = yearOfStudy;
     }
 
-    public String getMajor(){
+    public Major getMajor(){
         return this.major;
     }
 
-    public void setMajor(String major){
+    public void setMajor(Major major){
         this.major = major;
     }
 
