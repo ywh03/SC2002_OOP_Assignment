@@ -60,7 +60,7 @@ public class CompanyRepBoundary {
         }
     }
 
-    private void createInternshipPosting(CompanyRep companyRep) {
+    private void createInternship(CompanyRep companyRep) {
         String internshipId = ""; // how to get the internshipID
 
 
@@ -73,8 +73,8 @@ public class CompanyRepBoundary {
         String preferredMajorInput = console.readLine("Preferred Major: ");
         // convert to Major enum
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
-        String appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
-        String appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
         String compRepIC = companyRep.getFullName(); 
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
@@ -112,8 +112,8 @@ public class CompanyRepBoundary {
         String preferredMajorInput = console.readLine("Preferred Major: ");
         // convert to Major enum
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
-        String appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
-        String appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
         String compRepIC = companyRep.getFullName(); 
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
