@@ -131,12 +131,22 @@ public class InternshipController {
      * @param numOfSlots number of available slots
      * @return true if created successfully, false if posting limits exceeded
      */
-    public boolean createInternship(String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+
+    public boolean countExistingInternships(CompanyRep compRepIC){
         long existingCount = internshipRepository.findAll().stream().filter(i -> i.getCompRepIC().getId().equals(compRepIC.getId())).count();
 
         if (existingCount >= 5) {
             return false; // cannot create more than 5 internships
+        } else {
+            return true;
         }
+    }
+    public boolean createInternship(String title, String description, InternshipLevel level, Major preferredMajor, Date appOpenDate, Date appCloseDate, String companyName, CompanyRep compRepIC, int numOfSlots){
+        // long existingCount = internshipRepository.findAll().stream().filter(i -> i.getCompRepIC().getId().equals(compRepIC.getId())).count();
+
+        // if (existingCount >= 5) {
+        //     return false; // cannot create more than 5 internships
+        // }
         
         String internshipId = internshipRepository.generateNextId();
         Internship internship = new Internship(internshipId, title, description, level, preferredMajor, appOpenDate, appCloseDate, InternshipStatus.PENDING, companyName, compRepIC, numOfSlots);

@@ -105,6 +105,12 @@ public class CompanyRepBoundary {
      * @param companyRep the CompanyRep creating the posting
      */
     private void createInternship(CompanyRep companyRep) {
+        if (!internshipController.countExistingInternships(companyRep)){
+            System.out.println("Cannot create more than 5 internship postings");
+            return;
+        }
+
+
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
