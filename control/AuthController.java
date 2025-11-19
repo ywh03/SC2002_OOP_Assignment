@@ -73,15 +73,15 @@ public class AuthController{
      * @param newPassword the new password to set
      * @return true if the password was successfully changed, false otherwise
      */
-    public boolean changePassword(String newPassword) {
-        if (loggedIn && currentUser != null) {
-            currentUser.setPassword(newPassword);
-            userRepository.save(currentUser); // update repo to save this new pw
-            return true;
-        } else {
-            return false;
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        if (!user.getPassword().equals(oldPassword)) {
+            return false;  // incorrect current password
         }
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        return true;
     }
+
 
     /**
      * Registers a new Company Representative.

@@ -41,6 +41,7 @@ public class CareerCentreStaffBoundary {
     private final InternshipController internshipController;
     private final CompanyRepController companyRepController;
     private final InternshipApplicationController internshipApplicationController;
+    private final LoginBoundary loginBoundary;
     private final ConsoleUtil console;
 
     /**
@@ -50,10 +51,11 @@ public class CareerCentreStaffBoundary {
      * @param companyRepController controller handling CompanyRep registration logic
      * @param internshipApplicationController controller handling internship applications & withdrawals
      */
-    public CareerCentreStaffBoundary(InternshipController internshipController,  CompanyRepController companyRepController, InternshipApplicationController internshipApplicationController) {
+    public CareerCentreStaffBoundary(InternshipController internshipController,  CompanyRepController companyRepController, InternshipApplicationController internshipApplicationController, LoginBoundary loginBoundary) {
         this.internshipController = internshipController;
         this.companyRepController = companyRepController;
         this.internshipApplicationController = internshipApplicationController;
+        this.loginBoundary = loginBoundary;
         this.console = new ConsoleUtil();
     }
 
@@ -70,7 +72,8 @@ public class CareerCentreStaffBoundary {
             System.out.println("3. Handle Withdrawal Requests");
             System.out.println("4. Generate Internship Report");
             System.out.println("5. View Notifications");
-            System.out.println("6. Logout");
+            System.out.println("6. Change Password");
+            System.out.println("7. Logout");
 
             String choice = console.readLine("Enter your choice: ");
 
@@ -80,7 +83,8 @@ public class CareerCentreStaffBoundary {
                 case "3" -> displayPendingWithdrawals(careerCentreStaff);
                 case "4" -> displayReport();
                 case "5" -> displayNotifications(careerCentreStaff);
-                case "6" -> {
+                case "6" -> loginBoundary.handlePasswordChange(careerCentreStaff);
+                case "7" -> {
                     System.out.println("Logging out...");
                     return;
                 }

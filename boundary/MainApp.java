@@ -57,7 +57,7 @@ public class MainApp {
         loginBoundary = new LoginBoundary(authController);
         studentBoundary = new StudentBoundary(internshipController, internshipApplicationController, console);
         companyRepBoundary = new CompanyRepBoundary(companyRepController, internshipController, internshipApplicationController, console);
-        careerCentreStaffBoundary = new CareerCentreStaffBoundary(internshipController, companyRepController, internshipApplicationController);
+        careerCentreStaffBoundary = new CareerCentreStaffBoundary(internshipController, companyRepController, internshipApplicationController, loginBoundary);
     }
 
     /**

@@ -87,15 +87,15 @@ public class LoginBoundary {
         }
 
         System.out.println("=== Change Password ===");
+        String oldPassword = console.readLine("Current Password: ");
         String newPassword = console.readLine("New Password: ");
 
-        boolean changePasswordSuccess = authController.changePassword(newPassword);
+        boolean changePasswordSuccess = authController.changePassword(user, oldPassword, newPassword);
+
         if (changePasswordSuccess) {
             System.out.println("Password changed successfully.");
         } else {
             System.out.println("Password change failed.");
         }
-
     }
-
 }
