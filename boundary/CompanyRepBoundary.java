@@ -8,6 +8,11 @@ import entity.Internship;
 import entity.InternshipApplication;
 import util.ConsoleUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import entity.enums.InternshipLevel;
@@ -73,8 +78,8 @@ public class CompanyRepBoundary {
         String preferredMajorInput = console.readLine("Preferred Major: ");
         // convert to Major enum
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
-        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
-        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
         String compRepIC = companyRep.getFullName(); 
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
@@ -112,8 +117,8 @@ public class CompanyRepBoundary {
         String preferredMajorInput = console.readLine("Preferred Major: ");
         // convert to Major enum
         Major preferredMajor = Major.valueOf(preferredMajorInput.toUpperCase()); 
-        Date appOpenDate = console.readLine("Application Open Date (DD/MM/YYYY): ");
-        Date appCloseDate = console.readLine("Application Close Date (DD/MM/YYYY): ");
+        Date appOpenDate = readValidatedLegacyDate("Application Open Date (DD/MM/YYYY): ");
+        Date appCloseDate = readValidatedLegacyDate("Application Close Date (DD/MM/YYYY): ");
         String companyName = companyRep.getCompanyName(); 
         String compRepIC = companyRep.getFullName(); 
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
@@ -194,6 +199,24 @@ public class CompanyRepBoundary {
             System.out.println("Failed to update Internship application.");
         }
 
+    }
+
+    private Date readValidatedLegacyDate(String prompt) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        formatter.setLenient(false); // don't accept invalid dates
+
+        Date date = null;
+
+        while (date == null) {
+            String input = console.readLine(prompt);
+            try {
+                date = formatter.parse(input);
+                
+            } catch (ParseException e) {
+                System.out.println("Invalid date format or date. Please use DD/MM/YYYY");
+            }
+        }
+        return date;
     }
 
 
