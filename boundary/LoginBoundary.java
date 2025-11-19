@@ -1,6 +1,7 @@
 package boundary;
 
 import control.AuthController;
+import entity.CompanyRep;
 import entity.User;
 import util.ConsoleUtil;
 
@@ -40,9 +41,14 @@ public class LoginBoundary {
         String department = console.readLine("Enter Company Rep Department: ");
         String position = console.readLine("Enter Company Rep Position: ");
 
-        boolean success = authController.registerCompanyRep(userId, password, fullName, companyName, department, position);
+        CompanyRep companyRep = new CompanyRep(userId, fullName, password, companyName, department, position);
+        boolean success = authController.registerCompanyRep(companyRep);
 
-        System.out.println("Registration submitted, awaiting staff approval");
+        if (success) {
+            System.out.println("Registration submitted, awaiting staff approval");
+        } else {
+            System.out.println("Company Rep already exists or registration has been submitted (pending approval).");
+        }
     }
 
     public void handlePasswordChange(User user) {

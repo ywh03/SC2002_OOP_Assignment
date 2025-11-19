@@ -110,7 +110,7 @@ public class CompanyRepBoundary {
     private void editInternship(CompanyRep companyRep) {
         System.out.println("\n=== Edit Internship Posting ===");
         // display all the postings 
-        ArrayList<Internship> pendingPostings = internshipController.getPendingInternships(companyRep.getId());
+        ArrayList<Internship> pendingPostings = internshipController.getPendingInternships(companyRep.getId()); // i think this method changed
         if (pendingPostings.isEmpty()) {
             System.out.println("You have no internship postings available for editing (only pending status can be modified).");
             return;
@@ -192,6 +192,8 @@ public class CompanyRepBoundary {
     }
 
     private void processApplication(CompanyRep companyRep) {
+        displayApplications(companyRep);
+        
         String internshipApplicationId = console.readLine("Internship Application ID: ");
         String choice = console.readLine("Accept or Reject (A/R)").toUpperCase();
 
