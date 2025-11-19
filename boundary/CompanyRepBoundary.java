@@ -6,6 +6,7 @@ import control.InternshipController;
 import entity.CompanyRep;
 import entity.Internship;
 import entity.InternshipApplication;
+import entity.Student;
 import util.ConsoleUtil;
 
 import java.text.ParseException;
@@ -20,6 +21,8 @@ import entity.enums.Major;
 
 
 import java.util.List;
+
+import Manager.NotificationManager;
 
 public class CompanyRepBoundary {
 
@@ -44,8 +47,9 @@ public class CompanyRepBoundary {
             System.out.println("4. View Applicants for a Posting");
             System.out.println("5. Accept/Reject Applicant");
             System.out.println("6. View My Postings");
+            System.out.println("7. View Notifications");
 
-            System.out.println("7. Logout");
+            System.out.println("8. Logout");
 
             String choice = console.readLine("Choose an option: ");
 
@@ -56,7 +60,8 @@ public class CompanyRepBoundary {
                 case "4" -> displayApplications(companyRep);
                 case "5" -> processApplication(companyRep);
                 case "6" -> displayInternshipListings(companyRep);
-                case "7" -> {
+                case "6" -> displayNotifications(companyRep);
+                case "8" -> {
                     System.out.println("Logging out...");
                     return;
                 }
@@ -234,6 +239,24 @@ public class CompanyRepBoundary {
         return date;
     }
 
+    private void displayNotifications(CompanyRep companyRep) {
+        List<Notification> notifs = NotificationManager.getInstance().getNotifications(companyRep.getId());
+
+        if (notifs.isEmpty()) {
+            System.out.println("No notifications.");
+            return;
+        }
+
+        System.out.println("=== Notifications ===");
+        for (Notification n : notifs) {
+            // example: mark read/unread and message
+            System.out.println((n.isRead() ? "[READ] " : "[UNREAD] ") + n.getMessage()
+                    + " | " + n.getTimestamp());
+        }
+
+        // Optional: mark all as read once displayed
+        NotificationManager.getInstance().markAllAsRead(companyRep.getId());
+    }
 
 
 
