@@ -72,9 +72,6 @@ public class CompanyRepBoundary {
     }
 
     private void createInternship(CompanyRep companyRep) {
-        String internshipId = ""; // how to get the internshipID
-
-
         System.out.println("\n=== Create Internship Posting ===");
         String title = console.readLine("Title: ");
         String description = console.readLine("Description: ");
@@ -104,7 +101,7 @@ public class CompanyRepBoundary {
         String companyName = companyRep.getCompanyName();
         int numOfSlots = Integer.parseInt(console.readLine("Number of Slots Available: "));
         
-        boolean success = internshipController.createInternship(internshipId,title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
+        boolean success = internshipController.createInternship(title, description, internshipLevel, preferredMajor, appOpenDate, appCloseDate, companyName, companyRep, numOfSlots);
         
         if (success) {
             System.out.println("Internship created.");
