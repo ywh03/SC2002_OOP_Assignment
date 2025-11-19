@@ -239,9 +239,10 @@ public class CompanyRepBoundary {
             return;
         }
 
+        System.out.println("\n=== My Internship Postings ===");
+        
         printInternshipTable(internships);
 
-        System.out.println("\n=== My Internship Postings ===");
 
     }
 
