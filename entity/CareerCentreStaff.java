@@ -1,7 +1,13 @@
 package entity;
 
-public class CareerCentreStaff extends User{
+import java.util.ArrayList;
+import java.util.List;
+
+import entity.Notification;
+
+public class CareerCentreStaff extends User implements Notifiable{
     private String staffDepartment;
+    private List<Notification> notifications = new ArrayList<>();
 
     // constructor
     public CareerCentreStaff(String userId, String fullName, String password, String staffDepartment){
@@ -9,12 +15,21 @@ public class CareerCentreStaff extends User{
         this.staffDepartment = staffDepartment;
     }
 
-    // getters & setters
-    public String getStaffDepartment(){
-        return this.staffDepartment;
+    @Override
+    public void receiveNotification(Notification notification) {
+        notifications.add(notification);
+        // optionally print to console/log
     }
 
-    public void setStaffDepartment(String staffDepartment){
-        this.staffDepartment = staffDepartment;
+    @Override
+    public List<Notification> getNotifications() {
+        return notifications;
     }
+
+    // getters & setters
+    public String getStaffDepartment(){return this.staffDepartment;}
+
+    public void setStaffDepartment(String staffDepartment){this.staffDepartment = staffDepartment;}
+
+
 }
