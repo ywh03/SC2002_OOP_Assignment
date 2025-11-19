@@ -108,7 +108,7 @@ public class StudentBoundary {
     }
 
     private void displayNotifications(Student student) {
-        List<Notification> notifs = NotificationManager.getInstance().getNotifications(student.getUserId());
+        List<Notification> notifs = NotificationManager.getInstance().getNotifications(student.getId());
 
         if (notifs.isEmpty()) {
             System.out.println("No notifications.");
@@ -123,7 +123,7 @@ public class StudentBoundary {
         }
 
         // Optional: mark all as read once displayed
-        NotificationManager.getInstance().markAllAsRead(student.getUserId());
+        NotificationManager.getInstance().markAllAsRead(student.getId());
     }
 
 
