@@ -154,6 +154,8 @@ public class InternshipController {
 
     public ArrayList<InternshipApplication> getApplications(String internshipId){
         Internship internship = this.internshipRepository.findById(internshipId);
+        if (internship == null) return null;
+
         return internship.getInternshipApplications();
     }
 

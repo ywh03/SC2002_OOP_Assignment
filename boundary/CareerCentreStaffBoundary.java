@@ -55,11 +55,11 @@ public class CareerCentreStaffBoundary {
                 case "2" -> displayPendingInternships(careerCentreStaff);
                 case "3" -> displayPendingWithdrawals(careerCentreStaff);
                 case "4" -> displayReport();
-                case "5" -> {
+                case "5" -> displayNotifications(careerCentreStaff);
+                case "6" -> {
                     System.out.println("Logging out...");
                     return;
                 }
-                case "6" -> displayNotifications(careerCentreStaff);
                 default -> System.out.println("Invalid choice.");
             }
         }
