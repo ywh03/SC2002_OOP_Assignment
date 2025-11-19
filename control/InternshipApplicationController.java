@@ -18,18 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller responsible for all business logic related to internship applications.
- *
- * <p>This includes handling:</p>
- * <ul>
- *     <li>Student internship applications</li>
- *     <li>Offer approval/rejection by company representatives</li>
- *     <li>Student acceptance/rejection of internship offers</li>
- *     <li>Withdrawal request processing and approval</li>
- *     <li>Eligibility checking and application limits</li>
- * </ul>
- */
 public class InternshipApplicationController {
 
     private InternshipApplicationRepository internshipApplicationRepository;
@@ -39,13 +27,6 @@ public class InternshipApplicationController {
 
     private String careerCenterStaffId;
 
-    /**
-     * Creates the controller with required repositories and managers injected.
-     *
-     * @param internshipApplicationRepository repository for storing internship applications
-     * @param internshipRepository repository for internships
-     * @param userRepository repository for user data (students and company reps)
-     */
     public InternshipApplicationController(InternshipApplicationRepository internshipApplicationRepository, InternshipRepository internshipRepository, UserRepository userRepository) { // empty constructor, dont create a new repo lol
 
         this.internshipApplicationRepository = internshipApplicationRepository;
@@ -71,10 +52,6 @@ public class InternshipApplicationController {
         this.careerCenterStaffId = id;
     }
 
-    /**
-     * Prints all internship applications (debug/admin use only).
-     * Reads from the internshipApplicationRepository and prints details.
-     */
     public void printApplication() {
         if (internshipApplicationRepository.findAll().isEmpty()) {
             System.out.println("No applications were submitted.");
@@ -87,18 +64,7 @@ public class InternshipApplicationController {
         }
     }
 
-    /**
-     * Allows a student to accept an internship offer.
-     *
-     * <p>When a student accepts an offer:</p>
-     * <ul>
-     *     <li>Offer flag is updated and saved</li>
-     *     <li>All other applications by the same student are withdrawn</li>
-     *     <li>Internship slot availability is updated and may mark internship as FILLED</li>
-     * </ul>
-     *
-     * @param intApp the internship application being accepted
-     */
+    // student accepts the offer
     public void acceptOffer(InternshipApplication intApp) { 
         if (intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL && !intApp.getOfferAccepted()) {
             intApp.setOfferAccepted(true);
@@ -129,13 +95,7 @@ public class InternshipApplicationController {
         }
     }
 
-    /**
-     * Allows a student to reject an internship offer.
-     *
-     * <p>This sets the application status to UNSUCCESSFUL.</p>
-     *
-     * @param internshipAppId ID of the internship application
-     */
+    // student rejects the offer
     public void rejectOffer(String internshipAppId) {
     InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null && intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL) {
@@ -144,25 +104,7 @@ public class InternshipApplicationController {
         }
     }
 
-    /**
-     * Allows a student to submit a new internship application.
-     *
-     * <p>This method validates:</p>
-     * <ul>
-     *     <li>Student exists</li>
-     *     <li>Internship exists</li>
-     *     <li>Student has not already applied</li>
-     *     <li>Student is eligible for the internship</li>
-     *     <li>Student has not exceeded the maximum number of applications</li>
-     * </ul>
-     *
-     * <p>When valid, creates and saves a new application, updates the internship,
-     * and sends a notification to the company representative.</p>
-     *
-     * @param internshipId ID of the internship being applied to
-     * @param studentId ID of the applying student
-     * @return true if the application succeeds, false otherwise
-     */
+    // student applies for an internship
     public boolean apply(String internshipId, String studentId) {
 
         Internship internship = internshipRepository.findById(internshipId);
@@ -204,14 +146,7 @@ public class InternshipApplicationController {
         return true;
     }
 
-    /**
-     * Approves an internship application (offer creation).
-     *
-     * <p>Sets the application status to SUCCESSFUL and notifies the student.</p>
-     *
-     * @param internshipAppId the ID of the application
-     * @return true if updated successfully
-     */
+    // means application status is successful -> give offer
     public boolean approveInternshipApplication(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null) {
@@ -225,14 +160,7 @@ public class InternshipApplicationController {
         return false;
     }
 
-    /**
-     * Rejects an internship application.
-     *
-     * <p>Sets the application status to UNSUCCESSFUL and notifies the student.</p>
-     *
-     * @param internshipAppId the ID of the application
-     * @return true if updated successfully
-     */
+    // company rejects application -> unsuccessful
     public boolean rejectInternshipApplication(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null) {
@@ -246,16 +174,7 @@ public class InternshipApplicationController {
         return false;
     }
 
-    /**
-     * Allows a student to request withdrawal from a PENDING internship application.
-     *
-     * <p>Only PENDING applications may be withdrawn. A PENDING_WITHDRAWAL status is set,
-     * and a notification is sent to Career Centre Staff if configured.</p>
-     *
-     * @param internshipAppId ID of the application being withdrawn
-     * @param student the student requesting the withdrawal
-     * @return true if withdrawal is requested successfully
-     */
+    // student requests withdrawal
     public boolean requestWithdrawal(String internshipAppId, Student student) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp == null) return false;
@@ -275,19 +194,6 @@ public class InternshipApplicationController {
         return false;
     }
 
-    /**
-     * Approves a student's withdrawal request.
-     *
-     * <p>This method:</p>
-     * <ul>
-     *     <li>Sets status to WITHDRAWN</li>
-     *     <li>Removes the application from the internship's internal list</li>
-     *     <li>Persists all changes</li>
-     * </ul>
-     *
-     * @param internshipAppId ID of the application
-     * @return true if withdrawal approved
-     */
     public boolean approveAppWithdrawal(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null  && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
@@ -295,6 +201,9 @@ public class InternshipApplicationController {
             internshipApplicationRepository.save(intApp);
             intApp.getInternship().getInternshipApplications().removeIf(a -> a.getId().equals(intApp.getId()));
             internshipRepository.save(intApp.getInternship());
+
+            notificationManager.sendNotification(intApp.getInternship().getCompRepIC().getId(), "Student (" + intApp.getStudent().getId() + ") has withdrawn for your internship: " + intApp.getInternship().getInternshipTitle());
+
             return true;
         // } else {
         //     System.out.println("Application not found.");
@@ -302,14 +211,6 @@ public class InternshipApplicationController {
         return false;
     }
 
-    /**
-     * Rejects a withdrawal request.
-     *
-     * <p>Reverts status from PENDING_WITHDRAWAL back to PENDING.</p>
-     *
-     * @param internshipAppId ID of the application
-     * @return true if withdrawal rejected successfully
-     */
     public boolean rejectAppWithdrawal(String internshipAppId) {
         InternshipApplication intApp = internshipApplicationRepository.findById(internshipAppId);
         if (intApp != null && intApp.getApplicationStatus() == ApplicationStatus.PENDING_WITHDRAWAL) {
@@ -322,18 +223,6 @@ public class InternshipApplicationController {
         return false;
     }
 
-    /**
-     * Checks whether a student may apply for an internship.
-     *
-     * <p>A student cannot apply if:</p>
-     * <ul>
-     *     <li>They have already accepted an internship</li>
-     *     <li>They have 3 or more active applications</li>
-     * </ul>
-     *
-     * @param studentId ID of the student
-     * @return true if the student may apply
-     */
     public boolean canApply(String studentId) {
         User user = userRepository.findById(studentId);
         if (!(user instanceof Student student)) {
@@ -350,23 +239,6 @@ public class InternshipApplicationController {
         return currentIntAppCount < 3; // allow up to 3 active applications
     }
 
-    /**
-     * Validates whether a student is eligible to apply for a given internship.
-     *
-     * <p>Checks include:</p>
-     * <ul>
-     *     <li>Internship exists and is APPROVED</li>
-     *     <li>Internship is visible</li>
-     *     <li>Application window is open</li>
-     *     <li>Student's major matches</li>
-     *     <li>Student's year matches level requirements</li>
-     *     <li>Internship is not already filled</li>
-     * </ul>
-     *
-     * @param studentId ID of the student applying
-     * @param internshipId ID of the internship
-     * @return true if the student is eligible
-     */
     public boolean isEligible(String studentId, String internshipId) {
         User user = userRepository.findById(studentId);
         if (!(user instanceof Student student)) return false;
@@ -411,11 +283,6 @@ public class InternshipApplicationController {
         return true;
     }
 
-    /**
-     * Retrieves all applications with status PENDING_WITHDRAWAL.
-     *
-     * @return list of withdrawal requests
-     */
     public ArrayList<InternshipApplication> getWithdrawalRequests() {
 
         List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
@@ -426,12 +293,6 @@ public class InternshipApplicationController {
 
     }
 
-    /**
-     * Retrieves all internship applications for a specific internship.
-     *
-     * @param internshipId ID of the internship
-     * @return list of InternshipApplication for that internship
-     */
     public ArrayList<InternshipApplication> companyRepGetInternshipApplications(String internshipId) {
 
         List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
@@ -442,12 +303,6 @@ public class InternshipApplicationController {
 
     }
 
-    /**
-     * Retrieves all internship applications submitted by a specific student.
-     *
-     * @param userId student ID
-     * @return list of internship applications belonging to the student
-     */
     public ArrayList<InternshipApplication> studentGetInternshipApplications(String userId) {
 
         List<InternshipApplication> result = internshipApplicationRepository.findAll().stream()
