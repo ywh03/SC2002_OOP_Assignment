@@ -119,4 +119,8 @@ public class AuthController{
 
         return true;
     }
+
+    public boolean userExists(String userId) {
+        return userRepository.findById(userId) != null;
+    }
 }
