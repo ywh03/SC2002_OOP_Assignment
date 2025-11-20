@@ -1,11 +1,11 @@
 package control;
 
 import entity.CompanyRep;
+import entity.enums.RegistrationStatus;
 import repository.UserRepository;
-
 import java.util.ArrayList;
-
 import manager.NotificationManager;
+
 
 /**
  * Controller responsible for managing Company Representative–related business logic.
@@ -47,7 +47,7 @@ public class CompanyRepController {
         CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
         if (companyRep == null) return false;
 
-        companyRep.setApproved(true);
+        companyRep.setRegistrationStatus(RegistrationStatus.APPROVED);
         userRepository.save(companyRep);
         NotificationManager.getInstance().sendNotification(companyRepId,"Your company representative registration has been approved.");
 
@@ -66,8 +66,9 @@ public class CompanyRepController {
     public boolean rejectCompanyRep(String companyRepId){
         CompanyRep companyRep = (CompanyRep) userRepository.findById(companyRepId);
         if (companyRep == null) return false;
+        companyRep.setRegistrationStatus(RegistrationStatus.REJECTED);
+
         userRepository.save(companyRep);
-        companyRep.setApproved(false);
         NotificationManager.getInstance().sendNotification(companyRepId,"Your company representative registration has been rejected.");
         return true;
     }
@@ -79,7 +80,9 @@ public class CompanyRepController {
      */
     public ArrayList<CompanyRep> approvedCompanyReps(){
         ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
-        return new ArrayList<>(companyReps.stream().filter(CompanyRep::getApproved).toList());
+        return new ArrayList<>(companyReps.stream()
+        .filter(c -> c.getRegistrationStatus() == RegistrationStatus.APPROVED)
+        .toList());
     }
 
     /**
@@ -89,6 +92,8 @@ public class CompanyRepController {
      */
     public ArrayList<CompanyRep> getPendingRegistrations(){
         ArrayList<CompanyRep> companyReps = this.userRepository.getAllCompanyReps();
-        return new ArrayList<>(companyReps.stream().filter(c -> !c.getApproved()).toList());
+        return new ArrayList<>(companyReps.stream()
+        .filter(c -> c.getRegistrationStatus() == RegistrationStatus.PENDING)
+        .toList());
     }
 }

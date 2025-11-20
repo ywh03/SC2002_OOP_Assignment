@@ -1,5 +1,6 @@
 package entity;
 
+import entity.enums.RegistrationStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,7 @@ import java.util.List;
  * information and approval/registration state.</p>
  */
 public class CompanyRep extends User {
-    private boolean approved = false;
-    private int numOfInternships = 0;
+    private RegistrationStatus registrationStatus;    private int numOfInternships = 0;
     private String companyName;
     private String department;
     private String position;
@@ -39,6 +39,7 @@ public class CompanyRep extends User {
         this.companyName = companyName;
         this.department = department;
         this.position = position;
+        this.registrationStatus = RegistrationStatus.PENDING;
     }
 
     /**
@@ -63,8 +64,14 @@ public class CompanyRep extends User {
     }
 
     // getters & setters
-    public boolean getApproved(){return this.approved;}
-    public void setApproved(boolean approved){this.approved = approved;}
+    public RegistrationStatus getRegistrationStatus() {
+        return registrationStatus;
+    }
+
+    public void setRegistrationStatus(RegistrationStatus registrationStatus) {
+        this.registrationStatus = registrationStatus;
+    }
+
     public int getNumOfInternships(){return this.numOfInternships;}
     public void setNumOfInternships(int numOfInternships){this.numOfInternships = numOfInternships;}
     public String getCompanyName(){return this.companyName;}
@@ -73,6 +80,12 @@ public class CompanyRep extends User {
     public void setDepartment(String department){this.department = department;}
     public String getPosition(){return this.position;}
     public void setPosition(String position){this.position = position;}
+
+    // helper function
+    public boolean isApproved() {
+        return this.registrationStatus == RegistrationStatus.APPROVED;
+    }
+
 
     public void register(){
         this.registered = true;

@@ -6,6 +6,7 @@ import entity.CareerCentreStaff;
 import entity.CompanyRep;
 import entity.User;
 import repository.UserRepository;
+import entity.enums.RegistrationStatus;
 import manager.NotificationManager;
 
 /**
@@ -48,13 +49,34 @@ public class AuthController{
      */
     public User login(String userId, String password) {
         User user = userRepository.findById(userId);
-        if (user != null && user.getPassword().equals(password)) {
-            loggedIn = true;
-            currentUser = user;
-            return currentUser;
-        } else {
-            return null;
+        
+        if (user == null || !user.getPassword().equals(password)) {
+            return null; // Invalid ID or Password
         }
+        
+        // if (user != null && user.getPassword().equals(password)) {
+        //     loggedIn = true;
+        //     currentUser = user;
+        //     return currentUser;
+        // } 
+        
+        if (user instanceof CompanyRep) { // check registration status of company rep
+            CompanyRep rep = (CompanyRep) user;
+            
+            if (rep.getRegistrationStatus() == RegistrationStatus.PENDING) {
+                System.out.println("Login Failed: Your account is currently PENDING approval.");
+                return null; 
+            } 
+            else if (rep.getRegistrationStatus() == RegistrationStatus.REJECTED) {
+                System.out.println("Login Failed: Your registration application has been REJECTED.");
+                return null; 
+            }
+        }
+        
+        // login successs
+        loggedIn = true;
+        currentUser = user;
+        return currentUser;
     }
 
     /**
@@ -105,7 +127,8 @@ public class AuthController{
             return false; // companyRep already exists, dont need to reregister
         }
 
-        companyRep.setApproved(false);
+        // companyRep.setApproved(false);
+        companyRep.setRegistrationStatus(RegistrationStatus.PENDING);
 
         userRepository.save(companyRep);
 

@@ -12,6 +12,11 @@ import repository.InternshipApplicationRepository;
 import repository.InternshipRepository;
 import repository.UserRepository;
 import util.ConsoleUtil;
+import entity.CareerCentreStaff;
+import entity.CompanyRep;
+import entity.Student;
+import entity.enums.Major;
+import entity.enums.RegistrationStatus;
 
 /**
  * Entry point and application coordinator for the Internship Placement Management System.
@@ -58,6 +63,7 @@ public class MainApp {
         studentBoundary = new StudentBoundary(internshipController, internshipApplicationController, console, loginBoundary);
         companyRepBoundary = new CompanyRepBoundary(companyRepController, internshipController, internshipApplicationController, console, loginBoundary);
         careerCentreStaffBoundary = new CareerCentreStaffBoundary(internshipController, companyRepController, internshipApplicationController, loginBoundary);
+        initializeTestData(); 
     }
 
     /**
@@ -114,15 +120,68 @@ public class MainApp {
         if (user instanceof Student) {
             studentBoundary.displayMenu((Student) user);
         } else if (user instanceof CompanyRep) {
-            if (!((CompanyRep) user).getApproved()) {
-                System.out.println("Your account has not been approved yet.");
-                return;
-            }
+            companyRepBoundary.displayMenu((CompanyRep) user);
+            // if (!((CompanyRep) user).getApproved()) {
+            //     System.out.println("Your account has not been approved yet.");
+            //     return;
+            // }
             companyRepBoundary.displayMenu((CompanyRep) user);
         } else if (user instanceof CareerCentreStaff) {
             careerCentreStaffBoundary.displayMenu((CareerCentreStaff) user);
         }
 
+    }
+
+
+    private void initializeTestData() {
+        // Only add data if the user list is empty (fresh start)
+        if (userRepository.findAll().isEmpty()) {
+            System.out.println("--- Initializing Rich Test Data ---");
+
+            CareerCentreStaff s1 = new CareerCentreStaff("STAFF0001", "Alice Tan", "password1", "CCDS");
+            CareerCentreStaff s2 = new CareerCentreStaff("STAFF0002", "Benjamin Lee", "password2", "COE");
+            CareerCentreStaff s3 = new CareerCentreStaff("STAFF0003", "Cheryl Ng", "password3", "SOH");
+            
+            userRepository.save(s1);
+            userRepository.save(s2);
+            userRepository.save(s3);
+
+            // 1. Approved Rep (Google)
+            CompanyRep rep1 = new CompanyRep("REP001", "John Lim", "rep123", "Google", "Engineering", "Recruiter");
+            rep1.setRegistrationStatus(RegistrationStatus.APPROVED);
+            userRepository.save(rep1);
+
+            // 2. Approved Rep (Shopee)
+            CompanyRep rep2 = new CompanyRep("REP002", "Sarah Tan", "rep234", "Shopee", "Talent Acquisition", "Hiring Manager");
+            rep2.setRegistrationStatus(RegistrationStatus.APPROVED);
+            userRepository.save(rep2);
+
+            // 3. PENDING Rep (ByteDance)
+            CompanyRep rep3 = new CompanyRep("REP003", "Marcus Lee", "rep345", "ByteDance", "HR", "Campus Recruiter");
+            rep3.setRegistrationStatus(RegistrationStatus.PENDING); 
+            userRepository.save(rep3);
+
+            // 4. Approved Rep (NCS)
+            CompanyRep rep4 = new CompanyRep("REP004", "Daphne Koh", "rep456", "NCS", "Tech Hiring", "Recruiter");
+            rep4.setRegistrationStatus(RegistrationStatus.APPROVED);
+            userRepository.save(rep4);
+
+            CompanyRep rep5 = new CompanyRep("REP005", "Keith Wong", "rep567", "GovTech", "Internship Office", "Coordinator");
+            rep5.setRegistrationStatus(RegistrationStatus.PENDING);
+            userRepository.save(rep5);
+
+            Student st1 = new Student("U2410001A", "Tan Wei Ling", "pass001", 2, Major.COMPUTER_SCIENCE);
+            Student st2 = new Student("U2310002B", "Ng Jia Hao", "pass002", 3, Major.DATA_SCIENCE);
+            Student st3 = new Student("U2210003C", "Lim Yi Xuan", "pass003", 4, Major.COMPUTER_ENGINEERING);
+            Student st4 = new Student("U2510004D", "Chong Zhi Hao", "pass004", 1, Major.MECHANICAL_ENGINEERING);
+            Student st5 = new Student("U2310005E", "Wong Shu Hui", "pass005", 3, Major.COMPUTER_SCIENCE);
+
+            userRepository.save(st1);
+            userRepository.save(st2);
+            userRepository.save(st3);
+            userRepository.save(st4);
+            userRepository.save(st5);
+        }
     }
 
     /**
