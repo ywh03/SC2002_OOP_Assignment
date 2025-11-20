@@ -172,7 +172,7 @@ public class InternshipApplicationController {
 
         if (!intApp.getStudent().getId().equals(student.getId())) return false;
 
-        if (intApp.getApplicationStatus() == ApplicationStatus.PENDING) {
+        if (intApp.getApplicationStatus() == ApplicationStatus.PENDING || intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL) {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
