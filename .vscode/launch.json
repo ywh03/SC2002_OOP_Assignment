@@ -9,7 +9,11 @@
             "name": "MainApp",
             "request": "launch",
             "mainClass": "boundary.MainApp",
+<<<<<<< HEAD
             "projectName": "SC2002_OOP_Assignment_9d8bca32"
+=======
+            "projectName": "SC2002_OOP_Assignment_672fb9d1"
+>>>>>>> 374d527a25099ac7ed0f29bca267bd26a2520389
         },
         {
             "type": "java",

@@ -246,9 +246,11 @@ public class InternshipController {
                 if (studentYear <= 2) {
                     return internship.getLevel() == InternshipLevel.BASIC;
                 } else if (studentYear == 3){
-                    return internship.getLevel() == InternshipLevel.INTERMEDIATE;
+                    return internship.getLevel() == InternshipLevel.INTERMEDIATE || internship.getLevel() == InternshipLevel.BASIC;
                 } else if (studentYear >= 4){
-                    return internship.getLevel() == InternshipLevel.ADVANCED;
+                    return internship.getLevel() == InternshipLevel.ADVANCED 
+                        || internship.getLevel() == InternshipLevel.BASIC 
+                        || internship.getLevel() == InternshipLevel.INTERMEDIATE;
                 } else {
                     return true;
                 }

@@ -121,11 +121,6 @@ public class MainApp {
             studentBoundary.displayMenu((Student) user);
         } else if (user instanceof CompanyRep) {
             companyRepBoundary.displayMenu((CompanyRep) user);
-            // if (!((CompanyRep) user).getApproved()) {
-            //     System.out.println("Your account has not been approved yet.");
-            //     return;
-            // }
-            companyRepBoundary.displayMenu((CompanyRep) user);
         } else if (user instanceof CareerCentreStaff) {
             careerCentreStaffBoundary.displayMenu((CareerCentreStaff) user);
         }

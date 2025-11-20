@@ -56,14 +56,24 @@ public class InternshipApplicationController {
 
             // after student accepts one internship offer, they will withdraw all their other applications
             Student student = intApp.getStudent();
-            for (InternshipApplication otherIntApp : student.getAppliedInternships().stream().filter( a -> !a.getId().equals(intApp.getId())).collect((Collectors.toList()))) {
-                internshipApplicationRepository.delete(otherIntApp);
-                // remove from internship list as well
-                Internship otherInternshipApplied = otherIntApp.getInternship();
-                otherInternshipApplied.getInternshipApplications().removeIf(a -> a.getId().equals(otherIntApp.getId()));
-                internshipRepository.save(otherInternshipApplied);
-                // remove from student's list to update it as well
-                student.getAppliedInternships().removeIf(a -> a.getId().equals(otherIntApp.getId()));
+            List<InternshipApplication> allApps = internshipApplicationRepository.findAll()
+            .stream()
+            .filter(a -> a.getStudent().getId().equals(student.getId()))
+            .toList();
+
+            for (InternshipApplication other : allApps) {
+                if (!other.getId().equals(intApp.getId())) {
+
+                    other.setApplicationStatus(ApplicationStatus.WITHDRAWN);
+                    other.setOfferAccepted(false); // Just to be safe
+
+                    internshipApplicationRepository.save(other);
+
+                    // Update application list inside the internship
+                    Internship otherInternship = other.getInternship();
+                    // No removal — just update status inside the same object
+                    internshipRepository.save(otherInternship);
+                }
             }
 
             // check if internshipstatus goes to filled:
@@ -162,7 +172,7 @@ public class InternshipApplicationController {
 
         if (!intApp.getStudent().getId().equals(student.getId())) return false;
 
-        if (intApp.getApplicationStatus() == ApplicationStatus.PENDING) {
+        if (intApp.getApplicationStatus() == ApplicationStatus.PENDING || intApp.getApplicationStatus() == ApplicationStatus.SUCCESSFUL) {
             intApp.setApplicationStatus(ApplicationStatus.PENDING_WITHDRAWAL);
             internshipApplicationRepository.save(intApp);
 
